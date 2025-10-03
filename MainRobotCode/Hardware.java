@@ -6,13 +6,13 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
-
 import android.util.Size;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
+import java.util.ArrayList;
 import java.util.List;
 
 public class HardwareFile2024 {
@@ -44,6 +44,8 @@ public class HardwareFile2024 {
      
     public void init() {
 
+        initAprilTag();
+        
     // CONFIG NEEDS DECIDED BEFORE WE CAN USE THIS CODE ==============================================================
     LFDrive = hardwareMap.get(DcMotor.class, "");
     LFDrive = hardwareMap.get(DcMotor.class, "");
@@ -122,7 +124,7 @@ public class HardwareFile2024 {
         rightFrontWheel.setPower(rightFrontPower);
         leftBackWheel.setPower(leftBackPower);
         rightBackWheel.setPower(rightBackPower);
-
+        /*
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("Front left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
         telemetry.addData("Back  left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower);
@@ -131,5 +133,13 @@ public class HardwareFile2024 {
         myOpMode.telemetry.addData("Front left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
         myOpMode.telemetry.addData("Back  left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower);
         myOpMode.telemetry.update();
+        */
+    }
+    
+    // all parameters should be a string value
+    // Put data in this order: driving, linear actuator, scoring, hinge door, color sensor, webcam
+    // For
+    public void telemetryData(str driveData, str linActData, str scoreData, str hingeDoorData, str colorSensorData, str webcamData {
+        telemetry.addLine(
     }
 }
