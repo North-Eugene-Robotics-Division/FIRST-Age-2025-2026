@@ -15,7 +15,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HardwareFile2024 {
+public class Hardware {
 
     // Declare OpMode members.
     public LinearOpMode myOpMode = null;
@@ -26,53 +26,65 @@ public class HardwareFile2024 {
     public boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
   
     //The variable to store our instance of the AprilTag processor.
-    private AprilTagProcessor aprilTag;
+    public AprilTagProcessor aprilTag;
 
     //The variable to store our instance of the vision portal.
-    private VisionPortal visionPortal;
+    public VisionPortal visionPortal;
+
+    // What do we need defined for a Webcam???
+    public Webcam webcam;
 
     //Motors to control all wheels
-    public DcMotor leftFrontWheel = null;
-    public DcMotor leftBackWheel = null;
-    public DcMotor rightFrontWheel = null;
-    public DcMotor rightBackWheel = null;
-  
+    public DcMotor LFDrive = null;
+    public DcMotor LBDrive = null;
+    public DcMotor RFDrive = null;
+    public DcMotor RBDrive = null;
+    public DcMotor LLinAct = null;
+    public DcMotor RLinAct = null;
+    public DcMotor LScore  = null;
+    public DcMotor RScore  = null;
+    
     // Define a constructor that allows the OpMode to pass a reference to itself.
     public Hardware (LinearOpMode opmode) {
         myOpMode = opmode;
     }
      
     public void init() {
-
-        initAprilTag();
         
-    // CONFIG NEEDS DECIDED BEFORE WE CAN USE THIS CODE ==============================================================
-    LFDrive = hardwareMap.get(DcMotor.class, "");
-    LFDrive = hardwareMap.get(DcMotor.class, "");
-    RFDrive = hardwareMap.get(DcMotor.class, "");
-    RBDrive = hardwareMap.get(DcMotor.class, "");
-    LLinAct = myOpMode.hardwareMap.get(DcMotor.class, "");
-    RLinAct = myOpMode.hardwareMap.get(DcMotor.class, "");
-    LScore  = myOpMode.hardwareMap.get(DcMotor.class, "");
-    RScore  = myOpMode.hardwareMap.get(DcMotor.class, "");
+        initAprilTag();
+        LFDrive = myOpMode.hardwareMap.get(DcMotor.class, "LeftFrontDrive");
+        LBDrive = myOpMode.hardwareMap.get(DcMotor.class, "LeftBackDrive");
+        RFDrive = myOpMode.hardwareMap.get(DcMotor.class, "RightFrontDrive");
+        RBDrive = myOpMode.hardwareMap.get(DcMotor.class, "RightBackDrive");
+        LLinAct = myOpMode.hardwareMap.get(DcMotor.class, "LeftLinearActuators");
+        RLinAct = myOpMode.hardwareMap.get(DcMotor.class, "RightLinearActuators");
+        LScore  = myOpMode.hardwareMap.get(DcMotor.class, "LeftScoringWheel");
+        RScore  = myOpMode.hardwareMap.get(DcMotor.class, "RightScoringWheel");
+        // Do I need to define the Webcam and Color Sensor here?
 
-    leftFrontWheel.setDirection(DcMotor.Direction.REVERSE);
-    leftBackWheel.setDirection(DcMotor.Direction.REVERSE);
-    rightFrontWheel.setDirection(DcMotor.Direction.FORWARD);
-    rightBackWheel.setDirection(DcMotor.Direction.FORWARD);
+        LFDrive.setDirection(DcMotor.Direction.REVERSE);
+        LBDrive.setDirection(DcMotor.Direction.REVERSE);
+        RFDrive.setDirection(DcMotor.Direction.FORWARD);
+        RBDrive.setDirection(DcMotor.Direction.FORWARD);
 
-    myOpMode.telemetry.addData(">", "Hardware Initialized");
-    myOpMode.telemetry.update();
-  }
-
+        // Create initial telemetry to change once the robot starts going
+        myOpMode.telemetry.addLine("Driving Information will show here");
+        myOpMode.telemetry.addLine("Linear Actuator Information will show here");
+        myOpMode.telemetry.addLine("Scoring Motors Data will show here");
+        myOpMode.telemetry.addLine("Hinge Door Location will show here");
+        myOpMode.telemetry.addLine("Color Sensor Data will show here");
+        myOpMode.telemetry.addLine("Webcame Data will show here");
+        telemetry.update();
+    }
+    
     /**
-        * Calculates the left/right motor powers required to achieve the requested
-        * robot motions: Drive (Axial motion) and Turn (Yaw motion).
-        * Then sends these power levels to the motors.
-        *
-        * @param Drive     Fwd/Rev driving power (-1.0 to 1.0) +ve is forward
-        * @param Turn      Right/Left turning power (-1.0 to 1.0) +ve is CW
-        */
+    * Calculates the left/right motor powers required to achieve the requested
+    * robot motions: Drive (Axial motion) and Turn (Yaw motion).
+    * Then sends these power levels to the motors.
+    *
+    * @param Drive     Fwd/Rev driving power (-1.0 to 1.0) +ve is forward
+    * @param Turn      Right/Left turning power (-1.0 to 1.0) +ve is CW
+    */
      
     double axial;
     double strafe;
@@ -84,8 +96,6 @@ public class HardwareFile2024 {
         double rightFrontPower = - axial + strafe + rotation;
         double leftBackPower   = - axial + strafe - rotation;
         double rightBackPower  = - axial - strafe + rotation;
-        double leftBackPower   =   axial + strafe - rotation;
-        double rightBackPower  =   axial - strafe + rotation;
 
         // Scale the values so neither exceed +/- 1.0          
         double max;
@@ -137,9 +147,12 @@ public class HardwareFile2024 {
     }
     
     // all parameters should be a string value
+    // Start with putting the OpMode NAME, then put in values
     // Put data in this order: driving, linear actuator, scoring, hinge door, color sensor, webcam
-    // For
-    public void telemetryData(str driveData, str linActData, str scoreData, str hingeDoorData, str colorSensorData, str webcamData {
-        telemetry.addLine(
+    public void telemetryData(String currentOpMode, 
+                              String driveData, String linActData, String scoreData, 
+                              String hingeDoorData, String colorSensorData, String webcamData {
+        // Line order = the order of parameters
+        // Insert telemetry data here
     }
 }
