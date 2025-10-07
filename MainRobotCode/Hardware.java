@@ -148,7 +148,7 @@ public class Hardware {
                 .setDrawAxes(true)
                 .setDrawCubeProjection(true)
                 .setDrawTagID(true)
-                .setOutputUnits(AprilTagProcessor.OutputUnits.INCHES)  // or METERS if preferred
+//                .setOutputUnits(AprilTagProcessor.OutputUnits.INCHES)  // or METERS if preferred
                 .build();
 
     // Select camera: webcam or phone
