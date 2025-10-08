@@ -93,12 +93,12 @@ public class Hardware {
 
     // parameters are all doubles
     // data: from auto/gamepad, to drive motors
-    public void driveRobot(double axial, double strafe, double rotation) {
+    public void driveRobot(double forward, double rotation, double strafe) {
         // Combine drive and turn for blended motion.
-        double leftFrontPower  = - axial - strafe - rotation;
-        double rightFrontPower = - axial + strafe + rotation;
-        double leftBackPower   = - axial + strafe - rotation;
-        double rightBackPower  = - axial - strafe + rotation;
+        double leftFrontPower  =   forward + strafe - rotation;
+        double rightFrontPower = - forward + strafe + rotation;
+        double leftBackPower   = - forward + strafe - rotation;
+        double rightBackPower  =   forward + strafe + rotation;
         // Scale the values so neither exceed +/- 1.0          
         double max;
         double min;
@@ -107,9 +107,11 @@ public class Hardware {
         max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
         max = Math.max(max, Math.abs(leftBackPower));
         max = Math.max(max, Math.abs(rightBackPower));
+        
         min = Math.min(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
         min = Math.min(min, Math.abs(leftBackPower));
         min = Math.min(min, Math.abs(rightBackPower));
+        
         if (max > 1.0) {
             leftFrontPower  /= max;
             rightFrontPower /= max;
