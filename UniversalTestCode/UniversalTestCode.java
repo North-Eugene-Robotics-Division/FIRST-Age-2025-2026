@@ -29,17 +29,24 @@ public class UniversalTestCode extends LinearOpMode {
         while (opModeIsActive()) {
             
             if (gamepad1.right_bumper){
-                robot.cycleMotor();
+                robot.cycleMotorPos();
+                robot.sleep(250);
             }
             if (gamepad1.left_bumper){
-                
+                robot.cycleMotorNeg();
+                robot.sleep(250);
             }
+            
             if (gamepad1.a){
                 robot.motorPowerPos();
             }
             if (gamepad1.b){
                 robot.motorPowerNeg();
             }
+            
+            // if (gamepad1.x){
+            //     robot.powerMotor();
+            // }
             // if (gamepad1.x){
             //     robot.turnServoPos();
             // }

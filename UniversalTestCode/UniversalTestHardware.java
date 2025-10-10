@@ -89,24 +89,91 @@ public class UniversalTestHardware {
      
     public String currentMotor = "";
      
-    public void cycleMotor() {
-        
+    public void cycleMotorPos() {
         motorNumber = (motorNumber + 1)%8;
         myOpMode.telemetry.addData("Active motor", motorsNamesList[motorNumber]);
         myOpMode.telemetry.update();
-        
+    }
+    
+    public void cycleMotorNeg() {
+        motorNumber = (motorNumber - 1);
+        if (motorNumber == -1) {
+            motorNumber = 7;
+        }
+        myOpMode.telemetry.addData("Active motor", motorsNamesList[motorNumber]);
+        myOpMode.telemetry.update();
     }
     
     public void motorPowerPos() {
-        
-        motors[motorNumber].setPower(1);
+        // motors[motorNumber].setPower(1);
+        switch (motorNumber){
+            case 0: 
+                motor0.setPower(1);
+                break;
+            case 1: 
+                motor1.setPower(1);
+                break;
+            case 2: 
+                motor2.setPower(1);
+                break;
+            case 3: 
+                motor3.setPower(1);
+                break;
+            case 4: 
+                motor4.setPower(1);
+                break;
+            case 5: 
+                motor5.setPower(1);
+                break;
+            case 6: 
+                motor6.setPower(1);
+                break;
+            case 7: 
+                motor7.setPower(1);
+                break;
+        }
     }
     
+    public void powerMotor() {
+        // motor1.setPower(1);
+        switch (motorNumber){
+            case 0: 
+                motor0.setPower(-1);
+                break;
+            case 1: 
+                motor1.setPower(-1);
+                break;
+            case 2: 
+                motor2.setPower(-1);
+                break;
+            case 3: 
+                motor3.setPower(-1);
+                break;
+            case 4: 
+                motor4.setPower(-1);
+                break;
+            case 5: 
+                motor5.setPower(-1);
+                break;
+            case 6: 
+                motor6.setPower(-1);
+                break;
+            case 7: 
+                motor7.setPower(-1);
+                break;
+        }
+    }
     
     public void motorPowerNeg() {
-        
         motors[motorNumber].setPower(-1);
     }
 
+    public void sleep(int millis) {
+    try {
+    Thread.sleep(millis);
+    } catch (InterruptedException e) {
+    Thread.currentThread().interrupt();
+    }
+  }
     
 }
