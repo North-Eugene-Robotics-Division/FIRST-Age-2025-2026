@@ -50,7 +50,7 @@ public class Hardware {
 
     public static final double HINGE_MIN = 0.0;
     public static final double HINGE_MAX = 1.0;
-    
+
     // Define a constructor that allows the OpMode to pass a reference to itself.
     public Hardware (LinearOpMode opmode) {
         myOpMode = opmode;
@@ -141,6 +141,24 @@ public class Hardware {
         myOpMode.telemetry.addData("Back  left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower);
         myOpMode.telemetry.update();
         */
+    }
+
+    public void liftRobot(String Direction) {
+        switch (Direction){
+            case "Up": 
+                LLinAct.setPower(1);
+                RLinAct.setPower(1);
+                break;
+            case "Down": 
+                LLinAct.setPower(-1);
+                RLinAct.setPower(-1);
+                break;
+            }
+    }
+    
+    public void stopRobotLift(){
+        LLinAct.setPower(0);
+        RLinAct.setPower(0);
     }
 
     public void initAprilTag() {
