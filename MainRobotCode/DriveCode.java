@@ -38,11 +38,24 @@ public class DriveCode extends LinearOpMode {
             
             robot.driveRobot(Forward, Rotation, Strafe);
             
-            // Show the elapsed game time and wheel power.
-            //telemetry.addData("Status", "Run Time: " + runtime.toString());
-            // telemetry.addData("Front left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
-            // telemetry.addData("Back  left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower);
-            // telemetry.update();
+            if (gamepad1.rightBumperWasPressed()) {
+                robot.liftRobot("Up");
+            }
+            
+            if (gamepad1.rightBumperWasReleased()) {
+                robot.stopRobotLift();
+            }
+            
+            if (gamepad1.leftBumperWasPressed()) {
+                robot.liftRobot("Down");
+            }
+            
+            if (gamepad1.leftBumperWasReleased()) {
+                robot.stopRobotLift();
+            }
+            
+            
+            robot.telemetryData("DriveCode");
         }
     } 
 }
