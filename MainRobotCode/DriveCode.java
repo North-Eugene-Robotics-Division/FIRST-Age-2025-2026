@@ -20,6 +20,7 @@ public class DriveCode extends LinearOpMode {
         Hardware robot = new Hardware(this);
     
         robot.init();
+        robot.initColorSensor();
 
         
         telemetry.addData("Status", "Initialized");
