@@ -37,6 +37,10 @@ public class RobotDrive extends LinearOpMode {
             double Strafe   =  gamepad1.left_stick_x;
             
             robot.driveRobot(Forward, Rotation, Strafe);
+
+            if( gamepad1.x ) {
+                robot.spinLaunch()
+            }
             
             // Show the elapsed game time and wheel power.
             //telemetry.addData("Status", "Run Time: " + runtime.toString());
