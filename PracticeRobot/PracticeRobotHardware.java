@@ -61,8 +61,8 @@ public class PracticeRobotHardware {
      */
     public void driveRobot(double Forward, double Rotation, double Strafe) {
         // Combine drive and turn for blended motion.
-        double FL_Drive  = - Forward - Rotation - Strafe;
-        double FR_Drive  = - Forward + Rotation + Strafe;
+        double FL_Drive  =   Forward - Rotation - Strafe;
+        double FR_Drive  =   Forward + Rotation + Strafe;
         double BL_Drive  =   Forward - Rotation + Strafe;
         double BR_Drive  =   Forward + Rotation - Strafe;
 
@@ -97,9 +97,5 @@ public class PracticeRobotHardware {
         backLeft.setPower(BL_Drive);
         backRight.setPower(BR_Drive);
         
-    }
-    
-    
-
-    
+    }   
 }
