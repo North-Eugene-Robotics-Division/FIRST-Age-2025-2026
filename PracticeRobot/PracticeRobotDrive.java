@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.PracticeRobotHardware;
 
-@TeleOp(name="Basic: Omni Linear OpMode", group="Linear OpMode")
+@TeleOp(name="Practice Robot Drive", group="Linear OpMode")
 
 public class RobotDrive extends LinearOpMode {
     
@@ -20,6 +20,7 @@ public class RobotDrive extends LinearOpMode {
     @Override
     public void runOpMode() {
 
+        robot.init();
         
         telemetry.addData("Status", "Initialized");
         telemetry.update();
