@@ -18,6 +18,9 @@ public class PracticeRobotHardware {
     private DcMotor backRight   = null;
     private DcMotor frontRight  = null;
 
+    private DcMotor launchLeft = null;
+    private DcMotot launchRight = null;
+
     // Define Drive constants.  Make them public so they CAN be used by the calling OpMode
 
 
@@ -39,6 +42,9 @@ public class PracticeRobotHardware {
         frontLeft = myOpMode.hardwareMap.get(DcMotor.class, "front_left");
         frontRight = myOpMode.hardwareMap.get(DcMotor.class, "front_right");
 
+        launchLeft = myOpmode.hardwareMap.get(DcMotor.class, "launch_left");
+        launchRight = myOpmode.hardwareMap.get(DcMotor.class, "launch_right");
+
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // Pushing the left stick forward MUST make robot go forward. So adjust these two lines based on your first test drive.
         // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
@@ -46,6 +52,9 @@ public class PracticeRobotHardware {
         backRight.setDirection(DcMotor.Direction.FORWARD);
         frontLeft.setDirection(DcMotor.Direction.REVERSE);
         frontRight.setDirection(DcMotor.Direction.FORWARD);
+
+        launchLeft.setDirection(DcMotor.Direction.REVERSED);
+        launchRight.setDirection(DcMotor.Direction.FORWARD);
 
         myOpMode.telemetry.addData(">", "Hardware Initialized");
         myOpMode.telemetry.update();
@@ -98,4 +107,18 @@ public class PracticeRobotHardware {
         backRight.setPower(BR_Drive);
         
     }   
+
+
+    public void spinLaunch() {
+        switch(Power) {
+            case "On":
+                launchLeft.setPower(1.0);
+                launchRight.setPower(1.0);
+                break;
+            case "Off":
+                launchLeft.setPower(0);
+                launchRight.setPower(0);
+                break;  
+        }
+    }
 }
