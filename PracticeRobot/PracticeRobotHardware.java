@@ -109,7 +109,7 @@ public class PracticeRobotHardware {
     }   
 
 
-    // public void spinLaunch() {
+    // public void spinLaunch(String Power) {
     //     switch(Power) {
     //         case "On":
     //             launchLeft.setPower(1.0);
