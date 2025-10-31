@@ -21,6 +21,7 @@ public class UniversalTestHardware {
     private DcMotor motor5   = null;
     private DcMotor motor6   = null;
     private DcMotor motor7   = null;
+    
     private Servo   servo00  = null;
     private Servo   servo01  = null;
     private Servo   servo02  = null;
@@ -30,17 +31,17 @@ public class UniversalTestHardware {
     private Servo   servo06  = null;
     private Servo   servo07  = null;
     private Servo   servo08  = null;
-    private Servo   servo09  = null;
+    private Servo   servo09  = null; //limited to 10 servos for decode season
     private Servo   servo10  = null;
     private Servo   servo11  = null;
 
-    public DcMotor[] motors = {};
     
+    public DcMotor[] motors;
     public String[] motorsNamesList = {"Motor Port 0", "Motor Port 1", "Motor Port 2", "Motor Port 3", "Motor Port 4", "Motor Port 5", "Motor Port 6", "Motor Port 7"};
 
-    public Servo[] servos = {};
-    
-    public String[] stringsNamesList = {"Servo Port 0", "Motor Port 1", "Motor Port 2", "Motor Port 3", "Motor Port 4", "Motor Port 5", "Motor Port 6", "Motor Port 7"};
+    public Servo[] servos;
+    //changed this, was calld stringNamesList and was just the motor list with the first one changed to servo.
+    public String[] servosNamesList = {"Servo Port 0", "Servo Port 1", "Servo Port 2", "Servo Port 3", "Servo Port 4", "Servo Port 5", "Servo Port 6", "Servo Port 7", "Servo Port 8", "Servo Port 9", "Servo Port 10", "Servo Port 11"};
 
     // Define a constructor that allows the OpMode to pass a reference to itself.
     public UniversalTestHardware (LinearOpMode opmode) {
@@ -59,7 +60,6 @@ public class UniversalTestHardware {
         motor6  = myOpMode.hardwareMap.get(DcMotor.class, "motor6");
         motor7  = myOpMode.hardwareMap.get(DcMotor.class, "motor7");
 
-
         // Define and initialize ALL installed servos.
         servo00 = myOpMode.hardwareMap.get(Servo.class, "servo00");
         servo01 = myOpMode.hardwareMap.get(Servo.class, "servo01");
@@ -73,10 +73,10 @@ public class UniversalTestHardware {
         servo09 = myOpMode.hardwareMap.get(Servo.class, "servo09");
         servo10 = myOpMode.hardwareMap.get(Servo.class, "servo10");
         servo11 = myOpMode.hardwareMap.get(Servo.class, "servo11");
-        
-        DcMotor[] motors = {motor0, motor1, motor2, motor3, motor4, motor5, motor6, motor7};
-        
-        Servo[] servos = {servo00, servo01, servo02, servo03, servo04, servo05, servo06, servo07, servo08, servo09, servo10, servo11};
+
+        //filling the arrays made at the top of class with the motor references.
+        motors = new DcMotor[]{motor0, motor1, motor2, motor3, motor4, motor5, motor6, motor7};
+        servos = new Servo[]{servo00, servo01, servo02, servo03, servo04, servo05, servo06, servo07, servo08, servo09, servo10, servo11};
 
         myOpMode.telemetry.addData(">", "Hardware Initialized");
         myOpMode.telemetry.update();
@@ -85,16 +85,18 @@ public class UniversalTestHardware {
         //myOpMode.telemetry.update();
     }
 
+// ------ Motors Start ----------- \\
     public int motorNumber = 0;
-     
     public String currentMotor = "";
-     
+
+    //changes the motor in use to the next in line.
     public void cycleMotorPos() {
         motorNumber = (motorNumber + 1)%8;
         myOpMode.telemetry.addData("Active motor", motorsNamesList[motorNumber]);
         myOpMode.telemetry.update();
     }
-    
+
+    //changes the motor in use to the previous one.
     public void cycleMotorNeg() {
         motorNumber = (motorNumber - 1);
         if (motorNumber == -1) {
@@ -103,71 +105,96 @@ public class UniversalTestHardware {
         myOpMode.telemetry.addData("Active motor", motorsNamesList[motorNumber]);
         myOpMode.telemetry.update();
     }
+
     
     public void motorPowerPos() {
-        // motors[motorNumber].setPower(1);
-        switch (motorNumber){
-            case 0: 
-                motor0.setPower(1);
-                break;
-            case 1: 
-                motor1.setPower(1);
-                break;
-            case 2: 
-                motor2.setPower(1);
-                break;
-            case 3: 
-                motor3.setPower(1);
-                break;
-            case 4: 
-                motor4.setPower(1);
-                break;
-            case 5: 
-                motor5.setPower(1);
-                break;
-            case 6: 
-                motor6.setPower(1);
-                break;
-            case 7: 
-                motor7.setPower(1);
-                break;
-        }
+        motors[motorNumber].setPower(1);
+        // switch (motorNumber){
+        //     case 0: 
+        //         motor0.setPower(1);
+        //         break;
+        //     case 1: 
+        //         motor1.setPower(1);
+        //         break;
+        //     case 2: 
+        //         motor2.setPower(1);
+        //         break;
+        //     case 3: 
+        //         motor3.setPower(1);
+        //         break;
+        //     case 4: 
+        //         motor4.setPower(1);
+        //         break;
+        //     case 5: 
+        //         motor5.setPower(1);
+        //         break;
+        //     case 6: 
+        //         motor6.setPower(1);
+        //         break;
+        //     case 7: 
+        //         motor7.setPower(1);
+        //         break;
+        // }
     }
     
-    public void powerMotor() {
-        // motor1.setPower(1);
-        switch (motorNumber){
-            case 0: 
-                motor0.setPower(-1);
-                break;
-            case 1: 
-                motor1.setPower(-1);
-                break;
-            case 2: 
-                motor2.setPower(-1);
-                break;
-            case 3: 
-                motor3.setPower(-1);
-                break;
-            case 4: 
-                motor4.setPower(-1);
-                break;
-            case 5: 
-                motor5.setPower(-1);
-                break;
-            case 6: 
-                motor6.setPower(-1);
-                break;
-            case 7: 
-                motor7.setPower(-1);
-                break;
-        }
-    }
+    // public void powerMotor() {
+    //     // motor1.setPower(1);
+    //     switch (motorNumber){
+    //         case 0: 
+    //             motor0.setPower(-1);
+    //             break;
+    //         case 1: 
+    //             motor1.setPower(-1);
+    //             break;
+    //         case 2: 
+    //             motor2.setPower(-1);
+    //             break;
+    //         case 3: 
+    //             motor3.setPower(-1);
+    //             break;
+    //         case 4: 
+    //             motor4.setPower(-1);
+    //             break;
+    //         case 5: 
+    //             motor5.setPower(-1);
+    //             break;
+    //         case 6: 
+    //             motor6.setPower(-1);
+    //             break;
+    //         case 7: 
+    //             motor7.setPower(-1);
+    //             break;
+    //     }
+    // }
     
     public void motorPowerNeg() {
         motors[motorNumber].setPower(-1);
     }
+//-------- Motors End --------\\
 
+// ----- Servos Start ------- \\
+    //not sure how to do the powering and stuff, so I'm just doing the cycling.
+    public int servoNumber = 0;
+    public String currentServo = "";
+
+    public void cycleServoPos() {
+        servoNumber = (servoNumber + 1)%12;
+        myOpMode.telemetry.addData("Active servo", servosNamesList[servoNumber]);
+        myOpMode.telemetry.update();
+    }
+    
+    public void cycleServoNeg() {
+        servoNumber = (servoNumber - 1);
+        if (servoNumber == - 1) {
+            servoNumber = 11;
+        }
+        myOpMode.telemetry.addData("Active servo", servosNamesList[servoNumber]);
+        myOpMode.telemetry.update();
+    }
+    
+// ------ Servos End ------- \\    
+
+    
     public void sleep(int millis) {
     try {
     Thread.sleep(millis);
