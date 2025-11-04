@@ -109,16 +109,25 @@ public class PracticeRobotHardware {
     }   
 
 
-    // public void spinLaunch(String Power) {
-    //     switch(Power) {
-    //         case "On":
-    //             launchLeft.setPower(1.0);
-    //             launchRight.setPower(1.0);
-    //             break;
-    //         case "Off":
-    //             launchLeft.setPower(0);
-    //             launchRight.setPower(0);
-    //             break;  
-    //     }
-    // }
+    public void spinLaunch(String Power) {
+        switch(Power) {
+            case "On":
+                launchLeft.setPower(1.0);
+                launchRight.setPower(1.0);
+                break;
+            case "Off":
+                launchLeft.setPower(0);
+                launchRight.setPower(0);
+                break;  
+        }
+    
+    }
+    
+    public void Sleep(int millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
 }
