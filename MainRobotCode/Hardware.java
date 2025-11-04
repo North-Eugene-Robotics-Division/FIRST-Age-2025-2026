@@ -161,6 +161,76 @@ public class Hardware {
         RLinAct.setPower(0);
     }
 
+    public void initColorSensor() {
+        View relativeLayout;
+        
+        int relativeLayoutId = hardwareMap.appContext.getResources().getIdentifier("RelativeLayout", "id", hardwareMap.appContext.getPackageName());
+        relativeLayout = ((Activity) hardwareMap.appContext).findViewById(relativeLayoutId);
+        try {
+          runSample(); // actually execute the sample
+        } finally {
+          // On the way out, *guarantee* that the background is reasonable. It doesn't actually start off
+          // as pure white, but it's too much work to dig out what actually was used, and this is good
+          // enough to at least make the screen reasonable again.
+          // Set the panel back to the default color
+          relativeLayout.post(new Runnable() {
+            public void run() {
+              relativeLayout.setBackgroundColor(Color.WHITE);
+            }
+          });
+          }
+        protected void runSample() {
+    
+    float gain = 10;
+
+    final float[] hsvValues = new float[3];
+
+    if (colorSensor instanceof SwitchableLight) {
+      ((SwitchableLight)colorSensor).enableLight(true);
+    }
+
+      // Show the gain value via telemetry
+      telemetry.addData("Gain", gain);
+
+      // Tell the sensor our desired gain value (normally you would do this during initialization,
+      // not during the loop)
+      colorSensor.setGain(gain);
+
+          if (colorSensor instanceof SwitchableLight) {
+            SwitchableLight light = (SwitchableLight)colorSensor;
+            light.enableLight(!light.isLightOn());
+          }
+
+      // Get the normalized colors from the sensor
+      NormalizedRGBA colors = colorSensor.getNormalizedColors();
+
+      Color.colorToHSV(colors.toColor(), hsvValues);
+
+      telemetry.addLine()
+              .addData("Red", "%.3f", colors.red)
+              .addData("Green", "%.3f", colors.green)
+              .addData("Blue", "%.3f", colors.blue);
+      telemetry.addLine()
+              .addData("Hue", "%.3f", hsvValues[0])
+              .addData("Saturation", "%.3f", hsvValues[1])
+              .addData("Value", "%.3f", hsvValues[2]);
+      telemetry.addData("Alpha", "%.3f", colors.alpha);
+
+      if (colorSensor instanceof DistanceSensor) {
+        telemetry.addData("Distance (cm)", "%.3f", ((DistanceSensor) colorSensor).getDistance(DistanceUnit.CM));
+      }
+
+      telemetry.update();
+
+      // Change the Robot Controller's background color to match the color detected by the color sensor.
+      relativeLayout.post(new Runnable() {
+        public void run() {
+          relativeLayout.setBackgroundColor(Color.HSVToColor(hsvValues));
+        }
+      });
+    }
+  }
+    
     public void initAprilTag() {
     // Create the AprilTag processor.
         aprilTag = new AprilTagProcessor.Builder()
