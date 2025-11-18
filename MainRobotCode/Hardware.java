@@ -46,10 +46,16 @@ public class Hardware {
     public DcMotor LScore  = null;
     public DcMotor RScore  = null;
 
-    public Servo HingeDoor = null;
+    public Servo intake = null;
+    public Servo launchPrimer = null;
+    public Servo flipper = null;
 
-    public static final double HINGE_MIN = 0.0;
-    public static final double HINGE_MAX = 1.0;
+    public static final float INTAKE_MIN = .55/5;
+    public static final float INTAKE_MAX = 1.0/5;
+    public static final float LAUNCH_PRIMER_MIN = .5/5;
+    public static final float LAUNCH_PRIMER_MAX = 1.0/5;
+    public static final float FLIPPER_MIN = .5/5;
+    public static final float FLIPPER_MAX = 1.0/5;
 
     // Define a constructor that allows the OpMode to pass a reference to itself.
     public Hardware (LinearOpMode opmode) {
@@ -67,8 +73,9 @@ public class Hardware {
         LScore  = myOpMode.hardwareMap.get(DcMotor.class, "LeftScoringWheel");
         RScore  = myOpMode.hardwareMap.get(DcMotor.class, "RightScoringWheel");
 
-        HingeDoor = myOpMode.hardwareMap.get(Servo.class, "HingeDoor");
-        HingeDoor.setPosition(0.0);
+        intake = myOpMode.hardwareMap.get(Servo.class, "intake");
+        launchPrimer = myOpMode.hardwareMap.get(Servo.class, "launch_primer");
+        flipper = myOpMode.hardwareMap.get(Servo.class, "flipper");
 
         colorSensor = myOpMode.hardwareMap.get(ColorSensor.class, "ColorSensor");
 
@@ -78,11 +85,19 @@ public class Hardware {
         RFDrive.setDirection(DcMotor.Direction.FORWARD);
         RBDrive.setDirection(DcMotor.Direction.FORWARD);
 
+        //Servos are between 0 and 1, and has 5 total rotations. to go between one rotation, divide by 5 (never do 0)
+        
+        intake.setPosition(.55/5);
+        launchPrimer.setPosition(.5/5);
+        flipper.setPosition(.5/5);
+
         // Create initial telemetry
         myOpMode.telemetry.addLine("Driving Information will show here");
         myOpMode.telemetry.addLine("Linear Actuator Information will show here");
         myOpMode.telemetry.addLine("Scoring Motors Data will show here");
-        myOpMode.telemetry.addLine("Hinge Door Location will show here");
+        myOpMode.telemetry.addLine("Intake position will show here");
+        myOpMode.telemetry.addLine("Launch primer position will show here");
+        myOpMode.telemetry.addLine("Flipper position will show here");
         myOpMode.telemetry.addLine("Color Sensor Data will show here");
         myOpMode.telemetry.addLine("Webcam Data will show here");
         myOpMode.telemetry.update();
@@ -209,7 +224,9 @@ public class Hardware {
                                    " RightLinAct: " + RLinAct.getPower());
         myOpMode.telemetry.addLine("LeftScoring: " + LScore.getPower() + 
                                    " RightScoring: " + RScore.getPower());
-        myOpMode.telemetry.addLine("HingeDoor Position: " + HingeDoor.getPosition());
+        myOpMode.telemetry.addLine("Intake: " + intake.getPosition());
+        myOpMode.telemetry.addLine("Launch Primer: " + launchPrimer.getPosition());
+        myOpMode.telemetry.addLine("Flipper: " + flipper.getPosition());
         myOpMode.telemetry.addLine("Color Sensor: " + colorSensor);
         myOpMode.telemetry.addLine("Webcam: " + webcam);
         myOpMode.telemetry.update();
