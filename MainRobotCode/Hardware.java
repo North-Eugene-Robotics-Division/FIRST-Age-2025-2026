@@ -50,12 +50,17 @@ public class Hardware {
     public Servo launchPrimer = null;
     public Servo flipper = null;
 
+    // All servo positions for the chimney
     public static final float INTAKE_MIN = .55/5;
+    public static final float INTAKE_MID = .755/5;
     public static final float INTAKE_MAX = 1.0/5;
     public static final float LAUNCH_PRIMER_MIN = .5/5;
+    public static final float LAUNCH_PRIMER_MID = .75/5;
     public static final float LAUNCH_PRIMER_MAX = 1.0/5;
     public static final float FLIPPER_MIN = .5/5;
     public static final float FLIPPER_MAX = 1.0/5;
+
+    public final boolean recycling = false;
 
     // Define a constructor that allows the OpMode to pass a reference to itself.
     public Hardware (LinearOpMode opmode) {
@@ -86,10 +91,11 @@ public class Hardware {
         RBDrive.setDirection(DcMotor.Direction.FORWARD);
 
         //Servos are between 0 and 1, and has 5 total rotations. to go between one rotation, divide by 5 (never do 0)
-        
-        intake.setPosition(.55/5);
-        launchPrimer.setPosition(.5/5);
-        flipper.setPosition(.5/5);
+
+        //Default positions for the chimney servos is straight downwards, excluding the flipper, which has less of a needed starting position
+        intake.setPosition(INTAKE_MAX);
+        launchPrimer.setPosition(LAUNCH_PRIMER_MAX);
+        flipper.setPosition(FLIPPER_MAX);
 
         // Create initial telemetry
         myOpMode.telemetry.addLine("Driving Information will show here");
@@ -145,31 +151,20 @@ public class Hardware {
         RFDrive.setPower(rightFrontPower);
         LBDrive.setPower(leftBackPower);
         RBDrive.setPower(rightBackPower);
-
-        /*
-        telemetry.addData("Status", "Run Time: " + runtime.toString());
-        telemetry.addData("Front left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
-        telemetry.addData("Back  left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower);
-        telemetry.update();
-        myOpMode.telemetry.addData("Status", "Run Time: " + runtime.toString());
-        myOpMode.telemetry.addData("Front left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
-        myOpMode.telemetry.addData("Back  left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower);
-        myOpMode.telemetry.update();
-        */
     }
 
-    public void liftRobot(String Direction) {
-        switch (Direction){
-            case "Up": 
-                LLinAct.setPower(1);
-                RLinAct.setPower(1);
-                break;
-            case "Down": 
-                LLinAct.setPower(-1);
-                RLinAct.setPower(-1);
-                break;
-            }
-    }
+    // public void liftRobot(String Direction) {
+    //     switch (Direction){
+    //         case "Up": 
+    //             LLinAct.setPower(1);
+    //             RLinAct.setPower(1);
+    //             break;
+    //         case "Down": 
+    //             LLinAct.setPower(-1);
+    //             RLinAct.setPower(-1);
+    //             break;
+    //         }
+    // }
     
     public void stopRobotLift(){
         LLinAct.setPower(0);
@@ -209,6 +204,38 @@ public class Hardware {
     myOpMode.telemetry.addLine("AprilTag vision initialized.");
     myOpMode.telemetry.update();
     }
+    
+    public void sleep(int millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+
+    public void chimneyLaunch() {
+        intake.setPosition(INTAKE_MAX-INTAKE_MID);
+        sleep(1000);
+        launchPrimer.setPosition(LAUNCH_PRIMER_MIN);
+        sleep(1000);
+        intake.setPosition(INTAKE_MIN);
+        sleep(1000)
+        intake.setPosition(INTAKE_MID);
+        sleep(500);
+        launchPrimer.setPosition(LAUNCH_PRIMER_MID);
+    }
+
+    public void chimneyRecycle() {
+        if recycling == false {
+            recycling = true;
+            flipper.setPosition(FLIPPER_MIN);
+        }
+        else if recycling == true; {
+            recycling = false
+            flipper.setPosition(FLIPPER_MAX);
+        }
+    }
+    
     
     // Only parameter is the op mode
     // All other data is inside, or given to, this file
