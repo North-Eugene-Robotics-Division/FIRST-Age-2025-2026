@@ -46,10 +46,22 @@ public class Hardware {
     public DcMotor LScore  = null;
     public DcMotor RScore  = null;
 
-    public Servo HingeDoor = null;
+    public Servo intake = null;
+    public Servo launchPrimer = null;
+    public Servo flipper = null;
 
-    public static final double HINGE_MIN = 0.0;
-    public static final double HINGE_MAX = 1.0;
+    // All servo positions for the chimney 
+    public static final double INTAKE_MIN = .755/5;
+    public static final double INTAKE_MIL = .66/5;
+    public static final double INTAKE_MID = .55/5;
+    public static final double INTAKE_MAX = .33/5;
+    public static final double LAUNCH_PRIMER_MIN = .25/5;
+    public static final double LAUNCH_PRIMER_MID = .5/5;
+    public static final double LAUNCH_PRIMER_MAX = 1.0/5;
+    public static final double FLIPPER_MIN = .5/5;
+    public static final double FLIPPER_MAX = 1.0/5;
+
+    public boolean recycling = false;
 
     // Define a constructor that allows the OpMode to pass a reference to itself.
     public Hardware (LinearOpMode opmode) {
@@ -67,8 +79,9 @@ public class Hardware {
         LScore  = myOpMode.hardwareMap.get(DcMotor.class, "LeftScoringWheel");
         RScore  = myOpMode.hardwareMap.get(DcMotor.class, "RightScoringWheel");
 
-        HingeDoor = myOpMode.hardwareMap.get(Servo.class, "HingeDoor");
-        HingeDoor.setPosition(0.0);
+        intake = myOpMode.hardwareMap.get(Servo.class, "intake");
+        launchPrimer = myOpMode.hardwareMap.get(Servo.class, "launch_primer");
+        flipper = myOpMode.hardwareMap.get(Servo.class, "flipper");
 
         colorSensor = myOpMode.hardwareMap.get(ColorSensor.class, "ColorSensor");
 
@@ -78,11 +91,20 @@ public class Hardware {
         RFDrive.setDirection(DcMotor.Direction.FORWARD);
         RBDrive.setDirection(DcMotor.Direction.FORWARD);
 
+        //Servos are between 0 and 1, and has 5 total rotations. to go between one rotation, divide by 5 (never do 0)
+
+        //Default positions for the chimney servos is straight downwards, excluding the flipper, which has less of a needed starting position
+        intake.setPosition(INTAKE_MID);
+        launchPrimer.setPosition(LAUNCH_PRIMER_MID);
+        flipper.setPosition(FLIPPER_MIN);
+
         // Create initial telemetry
         myOpMode.telemetry.addLine("Driving Information will show here");
         myOpMode.telemetry.addLine("Linear Actuator Information will show here");
         myOpMode.telemetry.addLine("Scoring Motors Data will show here");
-        myOpMode.telemetry.addLine("Hinge Door Location will show here");
+        myOpMode.telemetry.addLine("Intake position will show here");
+        myOpMode.telemetry.addLine("Launch primer position will show here");
+        myOpMode.telemetry.addLine("Flipper position will show here");
         myOpMode.telemetry.addLine("Color Sensor Data will show here");
         myOpMode.telemetry.addLine("Webcam Data will show here");
         myOpMode.telemetry.update();
@@ -130,36 +152,25 @@ public class Hardware {
         RFDrive.setPower(rightFrontPower);
         LBDrive.setPower(leftBackPower);
         RBDrive.setPower(rightBackPower);
-
-        /*
-        telemetry.addData("Status", "Run Time: " + runtime.toString());
-        telemetry.addData("Front left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
-        telemetry.addData("Back  left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower);
-        telemetry.update();
-        myOpMode.telemetry.addData("Status", "Run Time: " + runtime.toString());
-        myOpMode.telemetry.addData("Front left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
-        myOpMode.telemetry.addData("Back  left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower);
-        myOpMode.telemetry.update();
-        */
     }
 
-    public void liftRobot(String Direction) {
-        switch (Direction){
-            case "Up": 
-                LLinAct.setPower(1);
-                RLinAct.setPower(1);
-                break;
-            case "Down": 
-                LLinAct.setPower(-1);
-                RLinAct.setPower(-1);
-                break;
-            }
-    }
+    // public void liftRobot(String Direction) {
+    //     switch (Direction){
+    //         case "Up": 
+    //             LLinAct.setPower(1);
+    //             RLinAct.setPower(1);
+    //             break;
+    //         case "Down": 
+    //             LLinAct.setPower(-1);
+    //             RLinAct.setPower(-1);
+    //             break;
+    //         }
+    // }
     
-    public void stopRobotLift(){
-        LLinAct.setPower(0);
-        RLinAct.setPower(0);
-    }
+    // public void stopRobotLift(){
+    //     LLinAct.setPower(0);
+    //     RLinAct.setPower(0);
+    // }
 
     public void initAprilTag() {
     // Create the AprilTag processor.
@@ -168,7 +179,7 @@ public class Hardware {
                 .setDrawAxes(true)
                 .setDrawCubeProjection(true)
                 .setDrawTagID(true)
-//                .setOutputUnits(AprilTagProcessor.OutputUnits.INCHES)  // or METERS if preferred
+//              .setOutputUnits(AprilTagProcessor.OutputUnits.INCHES)  // or METERS if preferred
                 .build();
 
     // Select camera: webcam or phone
@@ -195,6 +206,37 @@ public class Hardware {
     myOpMode.telemetry.update();
     }
     
+    public void sleep(int millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+
+    public void chimneyLaunch() {
+        intake.setPosition(INTAKE_MIL);
+        sleep(1000);
+        launchPrimer.setPosition(LAUNCH_PRIMER_MIN);
+        sleep(1000);
+        intake.setPosition(INTAKE_MIN);
+        sleep(1000);
+        intake.setPosition(INTAKE_MID);
+        sleep(500);
+        launchPrimer.setPosition(LAUNCH_PRIMER_MID);
+    }
+
+    public void chimneyRecycle() {
+        if (recycling == false) { 
+            recycling = true;
+            flipper.setPosition(FLIPPER_MIN);
+        } else if (recycling == true) {
+            recycling = false;
+            flipper.setPosition(FLIPPER_MAX);
+        }
+    }
+    
+    
     // Only parameter is the op mode
     // All other data is inside, or given to, this file
     // Run this whenever an update is wanted INSIDE of the op mode
@@ -209,9 +251,13 @@ public class Hardware {
                                    " RightLinAct: " + RLinAct.getPower());
         myOpMode.telemetry.addLine("LeftScoring: " + LScore.getPower() + 
                                    " RightScoring: " + RScore.getPower());
-        myOpMode.telemetry.addLine("HingeDoor Position: " + HingeDoor.getPosition());
+        myOpMode.telemetry.addLine("Intake: " + intake.getPosition());
+        myOpMode.telemetry.addLine("Launch Primer: " + launchPrimer.getPosition());
+        myOpMode.telemetry.addLine("Flipper: " + flipper.getPosition());
         myOpMode.telemetry.addLine("Color Sensor: " + colorSensor);
         myOpMode.telemetry.addLine("Webcam: " + webcam);
         myOpMode.telemetry.update();
     }
+    
+    
 }
