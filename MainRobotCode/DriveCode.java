@@ -21,6 +21,7 @@ public class DriveCode extends LinearOpMode {
     
         robot.init();
 
+        
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
@@ -37,22 +38,29 @@ public class DriveCode extends LinearOpMode {
             
             robot.driveRobot(Forward, Rotation, Strafe);
             
-            if (gamepad1.rightBumperWasPressed()) {
-                robot.liftRobot("Up");
+            // if (gamepad1.rightBumperWasPressed()) {
+            //     robot.liftRobot("Up");
+            // }
+            
+            // if (gamepad1.rightBumperWasReleased()) {
+            //     robot.stopRobotLift();
+            // }
+            
+            // if (gamepad1.leftBumperWasPressed()) {
+            //     robot.liftRobot("Down");
+            // }
+            
+            // if (gamepad1.leftBumperWasReleased()) {
+            //     robot.stopRobotLift();
+            // }
+            
+            if (gamepad1.aWasPressed()) {
+                robot.chimneyLaunch();
             }
             
-            if (gamepad1.rightBumperWasReleased()) {
-                robot.stopRobotLift();
+            if (gamepad1.backWasPressed()) {
+                robot.chimneyRecycle();
             }
-            
-            if (gamepad1.leftBumperWasPressed()) {
-                robot.liftRobot("Down");
-            }
-            
-            if (gamepad1.leftBumperWasReleased()) {
-                robot.stopRobotLift();
-            }
-            
             
             robot.telemetryData("DriveCode");
         }
