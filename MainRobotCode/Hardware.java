@@ -74,13 +74,11 @@ public class Hardware {
         LBDrive = myOpMode.hardwareMap.get(DcMotor.class, "LeftBackDrive");
         RFDrive = myOpMode.hardwareMap.get(DcMotor.class, "RightFrontDrive");
         RBDrive = myOpMode.hardwareMap.get(DcMotor.class, "RightBackDrive");
-        LLinAct = myOpMode.hardwareMap.get(DcMotor.class, "LeftLinearActuators");
-        RLinAct = myOpMode.hardwareMap.get(DcMotor.class, "RightLinearActuators");
-        LScore  = myOpMode.hardwareMap.get(DcMotor.class, "LeftScoringWheel");
-        RScore  = myOpMode.hardwareMap.get(DcMotor.class, "RightScoringWheel");
+        //LScore  = myOpMode.hardwareMap.get(DcMotor.class, "LeftScoringWheel");
+        //RScore  = myOpMode.hardwareMap.get(DcMotor.class, "RightScoringWheel");
 
         intake = myOpMode.hardwareMap.get(Servo.class, "intake");
-        launchPrimer = myOpMode.hardwareMap.get(Servo.class, "launch_primer");
+        launchPrimer = myOpMode.hardwareMap.get(Servo.class, "launchPrimer");
         flipper = myOpMode.hardwareMap.get(Servo.class, "flipper");
 
         colorSensor = myOpMode.hardwareMap.get(ColorSensor.class, "ColorSensor");
@@ -117,10 +115,11 @@ public class Hardware {
     // data: from auto/gamepad, to drive motors
     public void driveRobot(double forward, double rotation, double strafe) {
         // Combine drive and turn for blended motion.
-        double leftFrontPower  =   forward + strafe - rotation;
-        double rightFrontPower = - forward + strafe + rotation;
-        double leftBackPower   = - forward + strafe - rotation;
+        double leftFrontPower  =   forward - strafe + rotation;
+        double rightFrontPower = - forward - strafe + rotation;
+        double leftBackPower   = - forward + strafe + rotation;
         double rightBackPower  =   forward + strafe + rotation;
+        
         // Scale the values so neither exceed +/- 1.0          
         double max;
         double min;
@@ -148,29 +147,12 @@ public class Hardware {
         }
 
         // Send calculated power to wheels
-        LFDrive.setPower(leftFrontPower);
-        RFDrive.setPower(rightFrontPower);
-        LBDrive.setPower(leftBackPower);
-        RBDrive.setPower(rightBackPower);
+        LFDrive.setPower(leftFrontPower / 1.5);
+        RFDrive.setPower(rightFrontPower / 1.5);
+        LBDrive.setPower(leftBackPower / 1.5);
+        RBDrive.setPower(rightBackPower / 1.5);
     }
 
-    // public void liftRobot(String Direction) {
-    //     switch (Direction){
-    //         case "Up": 
-    //             LLinAct.setPower(1);
-    //             RLinAct.setPower(1);
-    //             break;
-    //         case "Down": 
-    //             LLinAct.setPower(-1);
-    //             RLinAct.setPower(-1);
-    //             break;
-    //         }
-    // }
-    
-    // public void stopRobotLift(){
-    //     LLinAct.setPower(0);
-    //     RLinAct.setPower(0);
-    // }
 
     public void initAprilTag() {
     // Create the AprilTag processor.
@@ -247,10 +229,8 @@ public class Hardware {
         myOpMode.telemetry.addData("Drive Power", 
                                    String.format("LF: %.2f, RF: %.2f, LB: %.2f, RB: %.2f",
                                    LFDrive.getPower(), RFDrive.getPower(), LBDrive.getPower(), RBDrive.getPower()));
-        myOpMode.telemetry.addLine("LeftLinAct: " + LLinAct.getPower() + 
-                                   " RightLinAct: " + RLinAct.getPower());
-        myOpMode.telemetry.addLine("LeftScoring: " + LScore.getPower() + 
-                                   " RightScoring: " + RScore.getPower());
+        //myOpMode.telemetry.addLine("LeftLinAct: " + LLinAct.getPower() + " RightLinAct: " + RLinAct.getPower());
+        //myOpMode.telemetry.addLine("LeftScoring: " + LScore.getPower() + " RightScoring: " + RScore.getPower());
         myOpMode.telemetry.addLine("Intake: " + intake.getPosition());
         myOpMode.telemetry.addLine("Launch Primer: " + launchPrimer.getPosition());
         myOpMode.telemetry.addLine("Flipper: " + flipper.getPosition());
