@@ -22,6 +22,8 @@ public class UniversalTestCode extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
+            
+            robot.telemetryData("Universal Test Code");
 
             if (servoMode) {
                 telemetry.addLine("Servo Mode");
@@ -46,30 +48,29 @@ public class UniversalTestCode extends LinearOpMode {
                 }
                 robot.sleep(250);
             }
-            telemetry.addLine("Active motor" + robot.motorsNamesList[robot.motorNumber]);
-            telemetry.addLine("Active servo" + robot.servosNamesList[robot.servoNumber]);
+            
 
             // read buttons
             if (gamepad1.a) {
                 if (servoMode) {
                     //servo code here
-                    robot.setServoPos();
+                    robot.setServoMax();
                     telemetry.addLine("Set" + robot.servosNamesList[robot.servoNumber] + " to maximum position");
                 } else {
                     //motor code here
                     robot.motorPowerPos();
-                    telemetry.addLine("Set" + robot.motorsNamesList[robot.motorNumber] + " to 1");
+                    //telemetry.addLine("Set" + robot.motorsNamesList[robot.motorNumber] + " to 1");
                 }
             }
             if (gamepad1.b) {
                 if (servoMode) {
                     //servo code here
-                    robot.setServoNeg();
+                    robot.setServoMin();
                     telemetry.addLine("Set" + robot.servosNamesList[robot.servoNumber] + " to minimum position");
                 } else {
                     //motor code here
                     robot.motorPowerNeg();
-                    telemetry.addLine("Set" + robot.motorsNamesList[robot.motorNumber] + " to -1");
+                    //telemetry.addLine("Set" + robot.motorsNamesList[robot.motorNumber] + " to -1");
                 }
             }
 
@@ -89,10 +90,19 @@ public class UniversalTestCode extends LinearOpMode {
                 } else {
                     //motor code here
                     robot.motorPowerStop();
-                    telemetry.addLine("Set" + robot.motorsNamesList[robot.motorNumber] + " to 0");
+                    //telemetry.addLine("Set" + robot.motorsNamesList[robot.motorNumber] + " to 0");
                 }
             }
-            telemetry.update();
+            
+            if (gamepad1.dpad_down) {
+                robot.motorPowerDown();
+                robot.sleep(250);
+            }
+            
+            if (gamepad1.dpad_up) {
+                robot.motorPowerUp();
+                robot.sleep(250);
+            }
         }
     }
 }
