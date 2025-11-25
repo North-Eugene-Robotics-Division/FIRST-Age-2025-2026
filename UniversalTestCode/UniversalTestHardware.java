@@ -225,13 +225,13 @@ public class UniversalTestHardware {
         }
 
         // Send calculated power to wheels
-        motor3.setPower(leftFrontPower  / 3);
+        motor3.setPower(leftFrontPower  / 1.5);
         //back right
-        motor2.setPower(rightFrontPower / 3);
+        motor2.setPower(rightFrontPower / 1.5);
         //back left
-        motor1.setPower(leftBackPower / 3);
+        motor1.setPower(leftBackPower / 1.5);
         //front left
-        motor0.setPower(rightBackPower / 3);
+        motor0.setPower(rightBackPower / 1.5);
         //front right
     }
     
