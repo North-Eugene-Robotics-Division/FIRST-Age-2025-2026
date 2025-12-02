@@ -11,50 +11,43 @@ import org.firstinspires.ftc.teamcode.Hardware;
 @TeleOp(name="Drive_Code", group="Linear OpMode")
 
 public class DriveCode extends LinearOpMode {
-    
-    private ElapsedTime runtime = new ElapsedTime();
+ 
+ private ElapsedTime runtime = new ElapsedTime();
 
-    @Override
-    public void runOpMode() {
-        
-        Hardware robot = new Hardware(this);
-    
-        robot.init();
+ @Override
+ public void runOpMode() {
+     
+     Hardware robot = new Hardware(this);
+ 
+     robot.init();
 
-        telemetry.addData("Status", "Initialized");
-        telemetry.update();
+     
+     telemetry.addData("Status", "Initialized");
+     telemetry.update();
 
-        waitForStart();
-        runtime.reset();
+     waitForStart();
+     runtime.reset();
 
-        // run until the end of the match (driver presses STOP)
-        while (opModeIsActive()) {
+     // run until the end of the match (driver presses STOP)
+     while (opModeIsActive()) {
 
-            // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
-            double Forward  =  gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
-            double Rotation =  gamepad1.right_stick_x;
-            double Strafe   =  gamepad1.left_stick_x;
-            
-            robot.driveRobot(Forward, Rotation, Strafe);
-            
-            if (gamepad1.rightBumperWasPressed()) {
-                robot.liftRobot("Up");
-            }
-            
-            if (gamepad1.rightBumperWasReleased()) {
-                robot.stopRobotLift();
-            }
-            
-            if (gamepad1.leftBumperWasPressed()) {
-                robot.liftRobot("Down");
-            }
-            
-            if (gamepad1.leftBumperWasReleased()) {
-                robot.stopRobotLift();
-            }
-            
-            
-            robot.telemetryData("DriveCode");
-        }
-    } 
+         // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
+         double Forward  =  gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
+         double Rotation =  gamepad1.right_stick_x;
+         double Strafe   =  gamepad1.left_stick_x;
+         
+         robot.driveRobot(Forward, Rotation, Strafe);
+         
+         
+         if (gamepad1.aWasPressed()) {
+             robot.chimneyLaunch();
+         }
+         
+         if (gamepad1.bWasPressed()) {
+             robot.chimneyRecycleToggle();
+         }
+         
+         robot.telemetryData("DriveCode");
+     }
+ } 
 }
