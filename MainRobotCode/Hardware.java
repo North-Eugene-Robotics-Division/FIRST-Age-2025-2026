@@ -41,8 +41,6 @@ public class Hardware {
     public DcMotor LBDrive = null;
     public DcMotor RFDrive = null;
     public DcMotor RBDrive = null;
-    public DcMotor LLinAct = null;
-    public DcMotor RLinAct = null;
     public DcMotor LScore  = null;
     public DcMotor RScore  = null;
 
@@ -50,17 +48,19 @@ public class Hardware {
     public Servo launchPrimer = null;
     public Servo flipper = null;
 
-    // All servo positions for the chimney
-    public static final float INTAKE_MIN = .55/5;
-    public static final float INTAKE_MID = .755/5;
-    public static final float INTAKE_MAX = 1.0/5;
-    public static final float LAUNCH_PRIMER_MIN = .5/5;
-    public static final float LAUNCH_PRIMER_MID = .75/5;
-    public static final float LAUNCH_PRIMER_MAX = 1.0/5;
-    public static final float FLIPPER_MIN = .5/5;
-    public static final float FLIPPER_MAX = 1.0/5;
+    // All servo positions for the chimney 
+    public static final double INTAKE_MIN = .755/5;
+    public static final double INTAKE_MIL = .66/5;
+    public static final double INTAKE_MID = .55/5; // Intake Mid is the default position for the intake
+    public static final double INTAKE_MAX = .33/5;
+    public static final double LAUNCH_PRIMER_MIN = .25/5;
+    public static final double LAUNCH_PRIMER_MID = .6/5; // Launch Primer Mid is default position for the launch primer
+    public static final double LAUNCH_PRIMER_MAX = .8/5;
+    public static final double FLIPPER_MIN = 1.0/5;
+    public static final double FLIPPER_MAX = .5/5; // Flipper Max is default position for the flipper
+    
 
-    public final boolean recycling = false;
+    public boolean recycling = false;
 
     // Define a constructor that allows the OpMode to pass a reference to itself.
     public Hardware (LinearOpMode opmode) {
@@ -73,8 +73,6 @@ public class Hardware {
         LBDrive = myOpMode.hardwareMap.get(DcMotor.class, "LeftBackDrive");
         RFDrive = myOpMode.hardwareMap.get(DcMotor.class, "RightFrontDrive");
         RBDrive = myOpMode.hardwareMap.get(DcMotor.class, "RightBackDrive");
-        LLinAct = myOpMode.hardwareMap.get(DcMotor.class, "LeftLinearActuators");
-        RLinAct = myOpMode.hardwareMap.get(DcMotor.class, "RightLinearActuators");
         LScore  = myOpMode.hardwareMap.get(DcMotor.class, "LeftScoringWheel");
         RScore  = myOpMode.hardwareMap.get(DcMotor.class, "RightScoringWheel");
 
@@ -93,13 +91,12 @@ public class Hardware {
         //Servos are between 0 and 1, and has 5 total rotations. to go between one rotation, divide by 5 (never do 0)
 
         //Default positions for the chimney servos is straight downwards, excluding the flipper, which has less of a needed starting position
-        intake.setPosition(INTAKE_MAX);
-        launchPrimer.setPosition(LAUNCH_PRIMER_MAX);
+        intake.setPosition(INTAKE_MID);
+        launchPrimer.setPosition(LAUNCH_PRIMER_MID);
         flipper.setPosition(FLIPPER_MAX);
 
         // Create initial telemetry
         myOpMode.telemetry.addLine("Driving Information will show here");
-        myOpMode.telemetry.addLine("Linear Actuator Information will show here");
         myOpMode.telemetry.addLine("Scoring Motors Data will show here");
         myOpMode.telemetry.addLine("Intake position will show here");
         myOpMode.telemetry.addLine("Launch primer position will show here");
@@ -116,10 +113,10 @@ public class Hardware {
     // data: from auto/gamepad, to drive motors
     public void driveRobot(double forward, double rotation, double strafe) {
         // Combine drive and turn for blended motion.
-        double leftFrontPower  =   forward + strafe - rotation;
+        double leftFrontPower  = - forward - strafe - rotation;
         double rightFrontPower = - forward + strafe + rotation;
         double leftBackPower   = - forward + strafe - rotation;
-        double rightBackPower  =   forward + strafe + rotation;
+        double rightBackPower  = - forward - strafe + rotation;
         // Scale the values so neither exceed +/- 1.0          
         double max;
         double min;
@@ -153,24 +150,6 @@ public class Hardware {
         RBDrive.setPower(rightBackPower);
     }
 
-    // public void liftRobot(String Direction) {
-    //     switch (Direction){
-    //         case "Up": 
-    //             LLinAct.setPower(1);
-    //             RLinAct.setPower(1);
-    //             break;
-    //         case "Down": 
-    //             LLinAct.setPower(-1);
-    //             RLinAct.setPower(-1);
-    //             break;
-    //         }
-    // }
-    
-    public void stopRobotLift(){
-        LLinAct.setPower(0);
-        RLinAct.setPower(0);
-    }
-
     public void initAprilTag() {
     // Create the AprilTag processor.
         aprilTag = new AprilTagProcessor.Builder()
@@ -178,7 +157,7 @@ public class Hardware {
                 .setDrawAxes(true)
                 .setDrawCubeProjection(true)
                 .setDrawTagID(true)
-//                .setOutputUnits(AprilTagProcessor.OutputUnits.INCHES)  // or METERS if preferred
+//              .setOutputUnits(AprilTagProcessor.OutputUnits.INCHES)  // or METERS if preferred
                 .build();
 
     // Select camera: webcam or phone
@@ -214,24 +193,23 @@ public class Hardware {
     }
 
     public void chimneyLaunch() {
-        intake.setPosition(INTAKE_MAX-INTAKE_MID);
+        launchPrimer.setPosition(LAUNCH_PRIMER_MAX);
         sleep(1000);
-        launchPrimer.setPosition(LAUNCH_PRIMER_MIN);
+        intake.setPosition(INTAKE_MAX);
         sleep(1000);
-        intake.setPosition(INTAKE_MIN);
-        sleep(1000)
         intake.setPosition(INTAKE_MID);
-        sleep(500);
+        sleep(10);
         launchPrimer.setPosition(LAUNCH_PRIMER_MID);
     }
+    
+    
 
-    public void chimneyRecycle() {
-        if recycling == false {
+    public void chimneyRecycleToggle() {
+        if (recycling == false) { 
             recycling = true;
             flipper.setPosition(FLIPPER_MIN);
-        }
-        else if recycling == true; {
-            recycling = false
+        } else if (recycling == true) {
+            recycling = false;
             flipper.setPosition(FLIPPER_MAX);
         }
     }
@@ -247,15 +225,15 @@ public class Hardware {
         myOpMode.telemetry.addData("Drive Power", 
                                    String.format("LF: %.2f, RF: %.2f, LB: %.2f, RB: %.2f",
                                    LFDrive.getPower(), RFDrive.getPower(), LBDrive.getPower(), RBDrive.getPower()));
-        myOpMode.telemetry.addLine("LeftLinAct: " + LLinAct.getPower() + 
-                                   " RightLinAct: " + RLinAct.getPower());
         myOpMode.telemetry.addLine("LeftScoring: " + LScore.getPower() + 
                                    " RightScoring: " + RScore.getPower());
-        myOpMode.telemetry.addLine("Intake: " + intake.getPosition());
+        myOpMode.telemetry.addData("Intake: " , intake.getPosition());
         myOpMode.telemetry.addLine("Launch Primer: " + launchPrimer.getPosition());
         myOpMode.telemetry.addLine("Flipper: " + flipper.getPosition());
         myOpMode.telemetry.addLine("Color Sensor: " + colorSensor);
         myOpMode.telemetry.addLine("Webcam: " + webcam);
         myOpMode.telemetry.update();
     }
+    
+    
 }
