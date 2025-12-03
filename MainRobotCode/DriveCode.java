@@ -37,28 +37,20 @@ public class DriveCode extends LinearOpMode {
          double Strafe   =  gamepad1.left_stick_x;
          
          robot.driveRobot(Forward, Rotation, Strafe);
+
+         if gamepad1.bWasPressed()) {
+            robot.Launcher("ON");
+         }
          
-         // if (gamepad1.rightBumperWasPressed()) {
-         //     robot.liftRobot("Up");
-         // }
-         
-         // if (gamepad1.rightBumperWasReleased()) {
-         //     robot.stopRobotLift();
-         // }
-         
-         // if (gamepad1.leftBumperWasPressed()) {
-         //     robot.liftRobot("Down");
-         // }
-         
-         // if (gamepad1.leftBumperWasReleased()) {
-         //     robot.stopRobotLift();
-         // }
+         if gamepad1.bWasReleased()) {
+            robot.Launcher("OFF");
+         }
          
          if (gamepad1.aWasPressed()) {
              robot.chimneyLaunch();
          }
          
-         if (gamepad1.backWasPressed()) {
+         if (gamepad1.xWasPressed()) {
              robot.chimneyRecycle();
          }
          
