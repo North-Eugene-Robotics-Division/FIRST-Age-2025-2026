@@ -41,10 +41,8 @@ public class Hardware {
     public DcMotor LBDrive = null;
     public DcMotor RFDrive = null;
     public DcMotor RBDrive = null;
-    public DcMotor LLinAct = null;
-    public DcMotor RLinAct = null;
-    public DcMotor LScore  = null;
-    public DcMotor RScore  = null;
+    
+    public DcMotor launcher  = null;
 
     public Servo intake = null;
     public Servo launchPrimer = null;
@@ -74,8 +72,8 @@ public class Hardware {
         LBDrive = myOpMode.hardwareMap.get(DcMotor.class, "LeftBackDrive");
         RFDrive = myOpMode.hardwareMap.get(DcMotor.class, "RightFrontDrive");
         RBDrive = myOpMode.hardwareMap.get(DcMotor.class, "RightBackDrive");
-        //LScore  = myOpMode.hardwareMap.get(DcMotor.class, "LeftScoringWheel");
-        //RScore  = myOpMode.hardwareMap.get(DcMotor.class, "RightScoringWheel");
+        
+        launcher  = myOpMode.hardwareMap.get(DcMotor.class, "Launcher");
 
         intake = myOpMode.hardwareMap.get(Servo.class, "intake");
         launchPrimer = myOpMode.hardwareMap.get(Servo.class, "launchPrimer");
@@ -89,6 +87,8 @@ public class Hardware {
         RFDrive.setDirection(DcMotor.Direction.FORWARD);
         RBDrive.setDirection(DcMotor.Direction.FORWARD);
 
+        launcher.setDriection(DcMotor.Direction.FORWARD);
+
         //Servos are between 0 and 1, and has 5 total rotations. to go between one rotation, divide by 5 (never do 0)
 
         //Default positions for the chimney servos is straight downwards, excluding the flipper, which has less of a needed starting position
@@ -98,11 +98,8 @@ public class Hardware {
 
         // Create initial telemetry
         myOpMode.telemetry.addLine("Driving Information will show here");
-        myOpMode.telemetry.addLine("Linear Actuator Information will show here");
-        myOpMode.telemetry.addLine("Scoring Motors Data will show here");
-        myOpMode.telemetry.addLine("Intake position will show here");
-        myOpMode.telemetry.addLine("Launch primer position will show here");
-        myOpMode.telemetry.addLine("Flipper position will show here");
+        myOpMode.telemetry.addLine("Scoring Motor Data will show here");
+        myOpMode.telemetry.addLine("Servo positions will show here");
         myOpMode.telemetry.addLine("Color Sensor Data will show here");
         myOpMode.telemetry.addLine("Webcam Data will show here");
         myOpMode.telemetry.update();
@@ -198,11 +195,11 @@ public class Hardware {
 
     public void chimneyLaunch() {
         intake.setPosition(INTAKE_MIL);
-        sleep(1000);
+        sleep(700);
         launchPrimer.setPosition(LAUNCH_PRIMER_MIN);
-        sleep(1000);
+        sleep(700);
         intake.setPosition(INTAKE_MIN);
-        sleep(1000);
+        sleep(700);
         intake.setPosition(INTAKE_MID);
         sleep(500);
         launchPrimer.setPosition(LAUNCH_PRIMER_MID);
@@ -217,7 +214,17 @@ public class Hardware {
             flipper.setPosition(FLIPPER_MAX);
         }
     }
-    
+
+    public void Launcher(Power) {
+        switch (Power) {
+                Case "ON":
+                        launcher.setPower(1);
+                        break;
+                Case "OFF":
+                        launcher.setPower(0);
+                        break;
+        }
+    }
     
     // Only parameter is the op mode
     // All other data is inside, or given to, this file
@@ -226,14 +233,13 @@ public class Hardware {
         //Says Op Mode name
         myOpMode.telemetry.addLine("OpMode Being Ran: " + currentOpMode);
         //Says value between -1.0 and 1.0 for each motor
-        myOpMode.telemetry.addData("Drive Power", 
+        myOpMode.telemetry.addData("Drive Powers: ", 
                                    String.format("LF: %.2f, RF: %.2f, LB: %.2f, RB: %.2f",
                                    LFDrive.getPower(), RFDrive.getPower(), LBDrive.getPower(), RBDrive.getPower()));
-        //myOpMode.telemetry.addLine("LeftLinAct: " + LLinAct.getPower() + " RightLinAct: " + RLinAct.getPower());
-        //myOpMode.telemetry.addLine("LeftScoring: " + LScore.getPower() + " RightScoring: " + RScore.getPower());
-        myOpMode.telemetry.addLine("Intake: " + intake.getPosition());
-        myOpMode.telemetry.addLine("Launch Primer: " + launchPrimer.getPosition());
-        myOpMode.telemetry.addLine("Flipper: " + flipper.getPosition());
+        myOpMode.telemetry.addLine("Launcher: " + launcher.getPower());
+        myOpMode.telemetry.addLine("Servo Positions: "
+                                   String.format("Intake: %.2f, Launch Primer: %.2f, Flipper: %.2f", 
+                                                 intake.getPosition(), launchPrimer.getPosition(), flipper.getPosition()));
         myOpMode.telemetry.addLine("Color Sensor: " + colorSensor);
         myOpMode.telemetry.addLine("Webcam: " + webcam);
         myOpMode.telemetry.update();
