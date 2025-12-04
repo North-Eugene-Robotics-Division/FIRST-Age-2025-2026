@@ -87,7 +87,7 @@ public class Hardware {
         RFDrive.setDirection(DcMotor.Direction.FORWARD);
         RBDrive.setDirection(DcMotor.Direction.FORWARD);
 
-        launcher.setDriection(DcMotor.Direction.FORWARD);
+        launcher.setDirection(DcMotor.Direction.FORWARD);
 
         //Servos are between 0 and 1, and has 5 total rotations. to go between one rotation, divide by 5 (never do 0)
 
@@ -205,7 +205,7 @@ public class Hardware {
         launchPrimer.setPosition(LAUNCH_PRIMER_MID);
     }
 
-    public void chimneyRecycle() {
+    public void chimneyRecycleToggle() {
         if (recycling == false) { 
             recycling = true;
             flipper.setPosition(FLIPPER_MIN);
@@ -215,12 +215,12 @@ public class Hardware {
         }
     }
 
-    public void Launcher(Power) {
+    public void Launcher(String Power) {
         switch (Power) {
-                Case "ON":
+                case "ON":
                         launcher.setPower(1);
                         break;
-                Case "OFF":
+                case "OFF":
                         launcher.setPower(0);
                         break;
         }
@@ -237,9 +237,8 @@ public class Hardware {
                                    String.format("LF: %.2f, RF: %.2f, LB: %.2f, RB: %.2f",
                                    LFDrive.getPower(), RFDrive.getPower(), LBDrive.getPower(), RBDrive.getPower()));
         myOpMode.telemetry.addLine("Launcher: " + launcher.getPower());
-        myOpMode.telemetry.addLine("Servo Positions: "
-                                   String.format("Intake: %.2f, Launch Primer: %.2f, Flipper: %.2f", 
-                                                 intake.getPosition(), launchPrimer.getPosition(), flipper.getPosition()));
+        myOpMode.telemetry.addData("Servo Positions: ",
+                                    String.format("Intake: %.2f, Launch Primer: %.2f, Flipper: %.2f", intake.getPosition(), launchPrimer.getPosition(), flipper.getPosition()));
         myOpMode.telemetry.addLine("Color Sensor: " + colorSensor);
         myOpMode.telemetry.addLine("Webcam: " + webcam);
         myOpMode.telemetry.update();
