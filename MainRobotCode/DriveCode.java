@@ -38,11 +38,11 @@ public class DriveCode extends LinearOpMode {
          
          robot.driveRobot(Forward, Rotation, Strafe);
 
-         if gamepad1.bWasPressed()) {
+         if (gamepad1.bWasPressed()) {
             robot.Launcher("ON");
          }
          
-         if gamepad1.bWasReleased()) {
+         if (gamepad1.bWasReleased()) {
             robot.Launcher("OFF");
          }
          
@@ -51,7 +51,7 @@ public class DriveCode extends LinearOpMode {
          }
          
          if (gamepad1.xWasPressed()) {
-             robot.chimneyRecycle();
+             robot.chimneyRecycleToggle();
          }
          
          robot.telemetryData("DriveCode");
