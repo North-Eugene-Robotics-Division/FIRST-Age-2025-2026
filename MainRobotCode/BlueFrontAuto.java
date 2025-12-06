@@ -31,7 +31,7 @@ public class BlueFrontAuto extends LinearOpMode {
         robot.sleep(500);
         robot.chimneyLaunch();
         robot.sleep(200);
-        robot.Launcher();
+        robot.Launcher(1);
         
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
