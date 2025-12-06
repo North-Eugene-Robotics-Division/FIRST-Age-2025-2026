@@ -38,21 +38,33 @@ public class DriveCode extends LinearOpMode {
          
          robot.driveRobot(Forward, Rotation, Strafe);
 
-         if (gamepad1.bWasPressed()) {
-            robot.Launcher("ON");
+         if (gamepad2.yWasReleased()) {
+            robot.Launcher();
          }
          
-         if (gamepad1.bWasReleased()) {
-            robot.Launcher("OFF");
-         }
-         
-         if (gamepad1.aWasPressed()) {
+         if (gamepad2.aWasReleased()) {
              robot.chimneyLaunch();
          }
          
-         if (gamepad1.xWasPressed()) {
-             robot.chimneyRecycleToggle();
+         if (gamepad2.xWasPressed()) {
+             robot.Intake();
          }
+         
+         if (gamepad1.xWasReleased()) {
+             robot.Normalize();
+         }
+         
+         if (gamepad2.bWasPressed()) {
+             robot.Eject();
+         }
+         
+         if (gamepad1.bWasReleased()) {
+             robot.Normalize();
+         }
+         
+        //  if (gamepad1.xWasPressed()) {
+        //      robot.chimneyRecycleToggle();
+        //  }
          
          robot.telemetryData("DriveCode");
      }
