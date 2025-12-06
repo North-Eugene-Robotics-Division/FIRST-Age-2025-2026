@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -37,29 +38,38 @@ public class Hardware {
     public ColorSensor colorSensor;
 
     //Motors to control all wheels
+    
+    //Motors for Driving
     public DcMotor LFDrive = null;
     public DcMotor LBDrive = null;
     public DcMotor RFDrive = null;
     public DcMotor RBDrive = null;
     
-    public DcMotor launcher  = null;
+    //Motors for Launching
+    public DcMotor LLauncher  = null;
+    public DcMotor RLauncher  = null;
 
+    //Servos for Chimney
     public Servo intake = null;
     public Servo launchPrimer = null;
     public Servo flipper = null;
+    
+    //Servos for Intake
+    public CRServo LIntake = null;
+    public CRServo RIntake = null;
 
     // All servo positions for the chimney 
-    public static final double INTAKE_MIN = .755/5;
+    public static final double INTAKE_MIN = .35/5;
     public static final double INTAKE_MIL = .66/5;
     public static final double INTAKE_MID = .55/5;
-    public static final double INTAKE_MAX = .33/5;
+    public static final double INTAKE_MAX = .75/5;
     public static final double LAUNCH_PRIMER_MIN = .25/5;
     public static final double LAUNCH_PRIMER_MID = .5/5;
-    public static final double LAUNCH_PRIMER_MAX = 1.0/5;
+    public static final double LAUNCH_PRIMER_MAX = .75/5;
     public static final double FLIPPER_MIN = .5/5;
     public static final double FLIPPER_MAX = 1.0/5;
 
-    public boolean recycling = false;
+    //public boolean recycling = false;
 
     // Define a constructor that allows the OpMode to pass a reference to itself.
     public Hardware (LinearOpMode opmode) {
@@ -73,11 +83,15 @@ public class Hardware {
         RFDrive = myOpMode.hardwareMap.get(DcMotor.class, "RightFrontDrive");
         RBDrive = myOpMode.hardwareMap.get(DcMotor.class, "RightBackDrive");
         
-        launcher  = myOpMode.hardwareMap.get(DcMotor.class, "Launcher");
+        LLauncher  = myOpMode.hardwareMap.get(DcMotor.class, "LeftLauncher");
+        RLauncher  = myOpMode.hardwareMap.get(DcMotor.class, "RightLauncher");
 
-        intake = myOpMode.hardwareMap.get(Servo.class, "intake");
-        launchPrimer = myOpMode.hardwareMap.get(Servo.class, "launchPrimer");
-        flipper = myOpMode.hardwareMap.get(Servo.class, "flipper");
+        intake = myOpMode.hardwareMap.get(Servo.class, "Intake");
+        launchPrimer = myOpMode.hardwareMap.get(Servo.class, "LaunchPrimer");
+        flipper = myOpMode.hardwareMap.get(Servo.class, "Flipper");
+        
+        LIntake = myOpMode.hardwareMap.get(CRServo.class, "LeftIntake");
+        RIntake = myOpMode.hardwareMap.get(CRServo.class, "RightIntake");
 
         colorSensor = myOpMode.hardwareMap.get(ColorSensor.class, "ColorSensor");
 
@@ -87,7 +101,8 @@ public class Hardware {
         RFDrive.setDirection(DcMotor.Direction.FORWARD);
         RBDrive.setDirection(DcMotor.Direction.FORWARD);
 
-        launcher.setDirection(DcMotor.Direction.FORWARD);
+        LLauncher.setDirection(DcMotor.Direction.REVERSE);
+        RLauncher.setDirection(DcMotor.Direction.FORWARD);
 
         //Servos are between 0 and 1, and has 5 total rotations. to go between one rotation, divide by 5 (never do 0)
 
@@ -112,10 +127,10 @@ public class Hardware {
     // data: from auto/gamepad, to drive motors
     public void driveRobot(double forward, double rotation, double strafe) {
         // Combine drive and turn for blended motion.
-        double leftFrontPower  =   forward - strafe + rotation;
-        double rightFrontPower = - forward - strafe + rotation;
-        double leftBackPower   = - forward + strafe + rotation;
-        double rightBackPower  =   forward + strafe + rotation;
+        double leftFrontPower  =   forward - strafe - rotation;
+        double rightFrontPower =   forward + strafe + rotation;
+        double leftBackPower   =  - forward - strafe + rotation;
+        double rightBackPower  =  - forward + strafe - rotation;
         
         // Scale the values so neither exceed +/- 1.0          
         double max;
@@ -144,10 +159,10 @@ public class Hardware {
         }
 
         // Send calculated power to wheels
-        LFDrive.setPower(leftFrontPower / 1.5);
-        RFDrive.setPower(rightFrontPower / 1.5);
-        LBDrive.setPower(leftBackPower / 1.5);
-        RBDrive.setPower(rightBackPower / 1.5);
+        LFDrive.setPower(leftFrontPower);
+        RFDrive.setPower(rightFrontPower);
+        LBDrive.setPower(leftBackPower);
+        RBDrive.setPower(rightBackPower);
     }
 
 
@@ -194,9 +209,7 @@ public class Hardware {
     }
 
     public void chimneyLaunch() {
-        intake.setPosition(INTAKE_MIL);
-        sleep(700);
-        launchPrimer.setPosition(LAUNCH_PRIMER_MIN);
+        launchPrimer.setPosition(LAUNCH_PRIMER_MAX);
         sleep(700);
         intake.setPosition(INTAKE_MIN);
         sleep(700);
@@ -205,25 +218,45 @@ public class Hardware {
         launchPrimer.setPosition(LAUNCH_PRIMER_MID);
     }
 
-    public void chimneyRecycleToggle() {
-        if (recycling == false) { 
-            recycling = true;
-            flipper.setPosition(FLIPPER_MIN);
-        } else if (recycling == true) {
-            recycling = false;
-            flipper.setPosition(FLIPPER_MAX);
-        }
-    }
+    // public void chimneyRecycleToggle() {
+    //     if (recycling == false) { 
+    //         recycling = true;
+    //         flipper.setPosition(FLIPPER_MIN);
+    //     } else if (recycling == true) {
+    //         recycling = false;
+    //         flipper.setPosition(FLIPPER_MAX);
+    //     }
+    // }
 
-    public void Launcher(String Power) {
-        switch (Power) {
-                case "ON":
-                        launcher.setPower(1);
-                        break;
-                case "OFF":
-                        launcher.setPower(0);
-                        break;
-        }
+    public void Launcher() {
+        LLauncher.setPower(1);
+        RLauncher.setPower(1);
+        sleep(1000);
+        LLauncher.setPower(0);
+        RLauncher.setPower(0);
+    }
+    
+    public void Intake() {
+        intake.setPosition(INTAKE_MAX);
+        sleep(200);
+        LIntake.setPower(-1);
+        RIntake.setPower(1);
+    }
+    
+    public void Normalize() {
+        LIntake.setPower(0);
+        RIntake.setPower(0);
+        sleep(50);
+        intake.setPosition(INTAKE_MID);
+        launchPrimer.setPosition(LAUNCH_PRIMER_MID);
+    }
+    
+    public void Eject() {
+        LIntake.setPower(1);
+        RIntake.setPower(-1);
+        intake.setPosition(INTAKE_MAX);
+        sleep(100);
+        launchPrimer.setPosition(LAUNCH_PRIMER_MAX);
     }
     
     // Only parameter is the op mode
@@ -236,7 +269,7 @@ public class Hardware {
         myOpMode.telemetry.addData("Drive Powers: ", 
                                    String.format("LF: %.2f, RF: %.2f, LB: %.2f, RB: %.2f",
                                    LFDrive.getPower(), RFDrive.getPower(), LBDrive.getPower(), RBDrive.getPower()));
-        myOpMode.telemetry.addLine("Launcher: " + launcher.getPower());
+        myOpMode.telemetry.addData("Left Launcher: " + LLauncher.getPower(), "Right Launcher: " + RLauncher.getPower());
         myOpMode.telemetry.addData("Servo Positions: ",
                                     String.format("Intake: %.2f, Launch Primer: %.2f, Flipper: %.2f", intake.getPosition(), launchPrimer.getPosition(), flipper.getPosition()));
         myOpMode.telemetry.addLine("Color Sensor: " + colorSensor);
