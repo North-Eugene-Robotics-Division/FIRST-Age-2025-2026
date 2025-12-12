@@ -17,6 +17,11 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import java.util.ArrayList;
 import java.util.List;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
+import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
+import com.qualcomm.robotcore.hardware.NormalizedRGBA;
+import com.qualcomm.robotcore.hardware.SwitchableLight;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 public class Hardware {
 	// Declare OpMode members.
@@ -35,7 +40,7 @@ public class Hardware {
 	// What do we need defined for a Webcam???
 	public WebcamName webcam;
 
-	public ColorSensor colorSensor;
+	public NormalizedColorSensor  colorSensor;
 
 	//Motors to control all wheels
 	
@@ -69,12 +74,26 @@ public class Hardware {
 	public static final double FLIPPER_MIN = .5/5;
 	public static final double FLIPPER_MAX = 1.0/5;
 
+	public float red, blue, green;
+	public float normRed, normBlue, normGreen;
+
 	//public boolean recycling = false;
 
 	// Define a constructor that allows the OpMode to pass a reference to itself.
 	public Hardware (LinearOpMode opmode) {
 		myOpMode = opmode;
 	}
+
+	// public enum detectedColor {
+	// 	no usages 
+	// 	RED,
+	// 	no usages
+	// 	BLUE, 
+	// 	no usages
+	// 	YELLOW,
+	// 	no usages 
+	// 	UNKNOWN
+	// }
 
 	public void init() {
 
@@ -93,7 +112,7 @@ public class Hardware {
 		LIntake = myOpMode.hardwareMap.get(CRServo.class, "LeftIntake");
 		RIntake = myOpMode.hardwareMap.get(CRServo.class, "RightIntake");
 
-		colorSensor = myOpMode.hardwareMap.get(ColorSensor.class, "ColorSensor");
+		colorSensor = myOpMode.hardwareMap.get(NormalizedColorSensor.class, "ColorSensor");
 
 		// Motor Directions
 		LFDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -200,6 +219,13 @@ public class Hardware {
 	myOpMode.telemetry.addLine("AprilTag vision initialized.");
 	myOpMode.telemetry.update();
 	}
+
+	public void getDetectedColor() {
+		
+		normRed = colorSensor.getNormalizedColors().red	 / colorSensor.getNormalizedColors().alpha;
+		normBlue = colorSensor.getNormalizedColors().blue   / colorSensor.getNormalizedColors().alpha;
+		normGreen = colorSensor.getNormalizedColors().green / colorSensor.getNormalizedColors().alpha;
+	}
 	
 	public void sleep(int millis) {
 		try {
@@ -259,6 +285,8 @@ public class Hardware {
 		sleep(100);
 		launchPrimer.setPosition(LAUNCH_PRIMER_MAX);
 	}
+
+	
 	
 	// Only parameter is the op mode
 	// All other data is inside, or given to, this file
@@ -273,9 +301,11 @@ public class Hardware {
 		myOpMode.telemetry.addData("Left Launcher: " + LLauncher.getPower(), "Right Launcher: " + RLauncher.getPower());
 		myOpMode.telemetry.addData("Chimney Servo Positions: ",
 									String.format("Intake: %.2f, Launch Primer: %.2f, Flipper: %.2f", intake.getPosition(), launchPrimer.getPosition(), flipper.getPosition()));
-		//myOpMode.telemetry.addData("Intake CRServo Powers: ",
-		//							String.format("Left Intake: %.2f, Right Intake: %.2f, ", intake.getPosition(), launchPrimer.getPosition(), flipper.getPosition()));
-		myOpMode.telemetry.addLine("Color Sensor: " + colorSensor);
+		myOpMode.telemetry.addData("Intake CRServo Powers: ",
+									String.format("Left Intake: %.2f, Right Intake: %.2f, ", intake.getPosition(), launchPrimer.getPosition(), flipper.getPosition()));
+		myOpMode.telemetry.addData("Colors: ",
+								"Red: %.2f, Blue: %.2f, Green: %.2f", 
+								  normRed, normBlue, normGreen);
 		myOpMode.telemetry.addLine("Webcam: " + webcam);
 		myOpMode.telemetry.update();
 	}
