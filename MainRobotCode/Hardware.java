@@ -74,7 +74,7 @@ public class Hardware {
 	public static final double FLIPPER_MIN = .5/5;
 	public static final double FLIPPER_MAX = 1.0/5;
 
-	public float gain = 2;
+	public float normRed, normBlue, normGreen;
 
 	//public boolean recycling = false;
 
@@ -86,7 +86,12 @@ public class Hardware {
 	public enum detectedColor {
 		no usages 
 		RED,
-	
+		no usages
+		BLUE, 
+		no usages
+		YELLOW,
+		no usages 
+		UNKNOWN
 	}
 
 	public void init() {
@@ -213,6 +218,14 @@ public class Hardware {
 	myOpMode.telemetry.addLine("AprilTag vision initialized.");
 	myOpMode.telemetry.update();
 	}
+
+	public DetectedColor getDetectedColor() {
+		NormalizedRGBA colors = ColorSensor.getNormalizedColors(); // Returns 4 values, red, blue, green, and alpha. All values are between 1 and 0.
+		
+		normRed = colors.red     / colors.alpha;
+		normBlue = colors.blue   / colors.alpha;
+		normGreen = colors.green / colors.alpha;
+	}
 	
 	public void sleep(int millis) {
 		try {
@@ -290,7 +303,8 @@ public class Hardware {
 									String.format("Intake: %.2f, Launch Primer: %.2f, Flipper: %.2f", intake.getPosition(), launchPrimer.getPosition(), flipper.getPosition()));
 		//myOpMode.telemetry.addData("Intake CRServo Powers: ",
 		//							String.format("Left Intake: %.2f, Right Intake: %.2f, ", intake.getPosition(), launchPrimer.getPosition(), flipper.getPosition()));
-		myOpMode.telemetry.addLine("Color Sensor: " + colorSensor);
+		myOpMode.telemetry.addData("Red: %.2f, Blue: %.2f, Green: %.2f", 
+								  normRed, normBlue, normGreen);
 		myOpMode.telemetry.addLine("Webcam: " + webcam);
 		myOpMode.telemetry.update();
 	}
