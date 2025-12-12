@@ -89,7 +89,9 @@ public class DriveCode extends LinearOpMode /*implements Runnable*/ {
 		//	  robot.chimneyRecycleToggle();
 		//  }
 		 
+		 robot.getDetectedColor();
 		 robot.telemetryData("DriveCode");
+		 
 	 }
  } 
 }
