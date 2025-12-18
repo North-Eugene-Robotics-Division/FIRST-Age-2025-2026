@@ -67,7 +67,10 @@ public class DriveCode extends LinearOpMode {
             }
             
             robot.getDetectedColor();
-            robot.ultrasonic.update();
+            robot.ultrasonic0.update();
+            robot.ultrasonic1.update();
+            robot.ultrasonic2.update();
+            robot.ultrasonic3.update();
 
             robot.telemetryData("DriveCode");
         }
