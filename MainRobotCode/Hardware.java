@@ -29,8 +29,11 @@ public class Hardware {
     public ElapsedTime runtime = new ElapsedTime();
     public boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
     
-    //Distance sensor
-    public M5UltrasonicI2C ultrasonic;
+     //Distance sensor
+    public M5UltrasonicI2C ultrasonic0;
+    public M5UltrasonicI2C ultrasonic1;
+    public M5UltrasonicI2C ultrasonic2;
+    public M5UltrasonicI2C ultrasonic3;
     
     //The variable to store our instance of the AprilTag processor.
     public AprilTagProcessor aprilTag;
@@ -139,8 +142,14 @@ public class Hardware {
         myOpMode.telemetry.update();
 
         initAprilTag();
-        ultrasonic = new M5UltrasonicI2C(myOpMode);
-        ultrasonic.init();
+        ultrasonic0 = new M5UltrasonicI2C(myOpMode, 0);
+        ultrasonic0.init();
+        ultrasonic1 = new M5UltrasonicI2C(myOpMode, 1);
+        ultrasonic1.init();
+        ultrasonic2 = new M5UltrasonicI2C(myOpMode, 2);
+        ultrasonic2.init();
+        ultrasonic3 = new M5UltrasonicI2C(myOpMode, 3);
+        ultrasonic3.init();
     }
 
 
@@ -302,7 +311,10 @@ public class Hardware {
         myOpMode.telemetry.addData("Intake CRServo Powers: ", String.format("Left Intake: %.2f, Right Intake: %.2f, ", intake.getPosition(), launchPrimer.getPosition(), flipper.getPosition()));
         myOpMode.telemetry.addData("Colors: ", "Red: %.2f, Blue: %.2f, Green: %.2f", normRed, normBlue, normGreen);
         myOpMode.telemetry.addLine("Webcam: " + webcam);
-        myOpMode.telemetry.addData("Ultrasonic (cm)", "%.1f", ultrasonic.getDistanceCm());
+        myOpMode.telemetry.addData("Ultrasonic (cm)", "%.1f", ultrasonic0.getDistanceCm());
+        myOpMode.telemetry.addData("Ultrasonic2 (cm)", "%.1f", ultrasonic1.getDistanceCm());
+        myOpMode.telemetry.addData("Ultrasonic3 (cm)", "%.1f", ultrasonic2.getDistanceCm());
+        myOpMode.telemetry.addData("Ultrasonic4 (cm)", "%.1f", ultrasonic3.getDistanceCm());
 
         myOpMode.telemetry.update();
     }
