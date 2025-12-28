@@ -5,37 +5,61 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import java.util.List;
+import java.util.ArrayList;
 
 import org.firstinspires.ftc.teamcode.Hardware;
 
 @Autonomous
 
 public class BlueFrontAuto extends LinearOpMode {
+    List<String> Order = new ArrayList<>();
+    int Step = 0;
 
-
-    @Override
-    public void runOpMode() {
-        
-        Hardware robot = new Hardware(this);
-         
-        robot.init();
-        
-        telemetry.addData("Status", "Initialized");
-        telemetry.update();
-        // Wait for the game to start (driver presses PLAY)
-        waitForStart();
-        
-        robot.driveRobot(1, 0, 0);
-        robot.sleep(3000);
+	@Override
+	public void runOpMode() {
+		
+		Hardware robot = new Hardware(this);
+		 
+		robot.init();
+		
+		telemetry.addData("Status", "Initialized");
+		telemetry.update();
+		// Wait for the game to start (driver presses PLAY)
+		waitForStart();
+		
+		robot.driveRobot(1, 0, 0);
+		robot.sleep(3000);
+		switch (robot.readAprilTag("ID")) {
+			case "21": 
+				//21 is GPP
+				Order = ["G", "P", "P"]
+				break;
+			case "22": 
+				//22 is PGP
+                Order = ["P", "G", "P"]
+				break;
+			case "23":
+				//23 is PPG
+                 Order = ["P", "P", "G"]
+				break;
+			default:
+                //Just guess
+                Order = ["G", "P", "P"]
+				break;
+		}
+        robot.driveRobot(0,-1,0);
+        robot.sleep(250);
+        robot.driveRobot(1,0,0);
+        robot.sleep(800);
         robot.driveRobot(0,1,0);
-        robot.sleep(500);
-        robot.chimneyLaunch();
-        robot.sleep(200);
-        robot.Launcher(1);
-        
-        // run until the end of the match (driver presses STOP)
-        while (opModeIsActive()) {
-           robot.telemetryData("BlueFrontAuto"); 
+        robot.sleep(1000);
+        for i in Order {
         }
-    }
+		
+		// run until the end of the match (driver presses STOP)
+		while (opModeIsActive()) {
+		   robot.telemetryData("BlueFrontAuto"); 
+		}
+	}
 }
