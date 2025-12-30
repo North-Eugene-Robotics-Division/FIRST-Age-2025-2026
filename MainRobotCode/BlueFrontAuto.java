@@ -15,6 +15,7 @@ import org.firstinspires.ftc.teamcode.Hardware;
 public class BlueFrontAuto extends LinearOpMode {
     List<String> Order = new ArrayList<>();
     int Step = 0;
+	boolean ran = false;
 
 	@Override
 	public void runOpMode() {
@@ -27,38 +28,41 @@ public class BlueFrontAuto extends LinearOpMode {
 		telemetry.update();
 		// Wait for the game to start (driver presses PLAY)
 		waitForStart();
-		
-		robot.driveRobot(1, 0, 0);
-		robot.sleep(3000);
-		switch (robot.readAprilTag("ID")) {
-			case "21": 
-				//21 is GPP
-				Order = ["G", "P", "P"]
-				break;
-			case "22": 
-				//22 is PGP
-                Order = ["P", "G", "P"]
-				break;
-			case "23":
-				//23 is PPG
-                 Order = ["P", "P", "G"]
-				break;
-			default:
-                //Just guess
-                Order = ["G", "P", "P"]
-				break;
-		}
-        robot.driveRobot(0,-1,0);
-        robot.sleep(250);
-        robot.driveRobot(1,0,0);
-        robot.sleep(800);
-        robot.driveRobot(0,1,0);
-        robot.sleep(1000);
-        for i in Order {
-        }
-		
+
 		// run until the end of the match (driver presses STOP)
 		while (opModeIsActive()) {
+			if (ran == false) {
+								
+				robot.driveRobot(1, 0, 0);
+				robot.sleep(3000);
+				robot.driveRobot(0,0,0);
+				switch (readAprilTag("ID")) {
+					case "21": 
+						//21 is GPP
+						Collections.addAll(Order, "G", "P", "P");
+						break;
+					case "22": 
+						//22 is PGP
+						Collections.addAll(Order, "P", "G", "P");
+						break;
+					case "23":
+						//23 is PPG
+						 Collections.addAll(Order, "P", "P", "G");
+						break;
+					default:
+						//Just guess
+						getOrder();
+						break;
+				}
+		        robot.driveRobot(0,-1,0);
+		        robot.sleep(250);
+		        robot.driveRobot(1,0,0);
+		        robot.sleep(800);
+		        robot.driveRobot(0,1,0);
+		        robot.sleep(1000);
+						
+				ran = true;
+			}
 		   robot.telemetryData("BlueFrontAuto"); 
 		}
 	}
