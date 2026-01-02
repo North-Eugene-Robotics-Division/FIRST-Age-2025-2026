@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import java.util.Collections;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -11,17 +12,15 @@ import java.util.ArrayList;
 import org.firstinspires.ftc.teamcode.Hardware;
 
 @Autonomous
-
 public class BlueFrontAuto extends LinearOpMode {
-    List<String> Order = new ArrayList<>();
-    int Step = 0;
+	ArrayList<String> Order = new ArrayList<>();
+	int Step = 0;
 	boolean ran = false;
 
 	@Override
 	public void runOpMode() {
 		
 		Hardware robot = new Hardware(this);
-		 
 		robot.init();
 		
 		telemetry.addData("Status", "Initialized");
@@ -31,12 +30,20 @@ public class BlueFrontAuto extends LinearOpMode {
 
 		// run until the end of the match (driver presses STOP)
 		while (opModeIsActive()) {
+			robot.telemetryData("BlueFrontAuto");
 			if (ran == false) {
-								
-				robot.driveRobot(1, 0, 0);
+				robot.driveRobot(1, 0, 0, "BlueAuto");
 				robot.sleep(3000);
-				robot.driveRobot(0,0,0);
-				switch (readAprilTag("ID")) {
+				robot.driveRobot(0,0,0, "BlueAuto");
+				String id = "";
+				int tries = 0;
+				while ((!id.equals("21") || !id.equals("22") || !id.equals("23")) && (tries < 10) && (opModeIsActive())){
+					id = robot.readAprilTag("ID");
+					sleep(10);
+					tries++;
+				}
+				
+				switch (id) {
 					case "21": 
 						//21 is GPP
 						Collections.addAll(Order, "G", "P", "P");
@@ -51,19 +58,21 @@ public class BlueFrontAuto extends LinearOpMode {
 						break;
 					default:
 						//Just guess
-						getOrder();
+						Collections.addAll(Order, "F", "A", "I", "L");
 						break;
 				}
-		        robot.driveRobot(0,-1,0);
-		        robot.sleep(250);
-		        robot.driveRobot(1,0,0);
-		        robot.sleep(800);
-		        robot.driveRobot(0,1,0);
-		        robot.sleep(1000);
-						
+				robot.driveRobot(0,-1,0, "BlueAuto");
+				robot.sleep(250);
+				robot.driveRobot(1,0,0, "BlueAuto");
+				robot.sleep(800);
+				robot.driveRobot(0,1,0, "BlueAuto");
+				robot.sleep(1000);
+				robot.driveRobot(0,0,0, "BlueAuto");
+					
 				ran = true;
 			}
-		   robot.telemetryData("BlueFrontAuto"); 
+			robot.telemetryData("BlueFrontAuto"); 
+			telemetry.addLine(Order.toString());
 		}
 	}
 }
