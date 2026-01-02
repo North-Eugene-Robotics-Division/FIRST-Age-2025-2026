@@ -14,7 +14,6 @@ import org.firstinspires.ftc.teamcode.Hardware;
 @Autonomous
 public class BlueFrontAuto extends LinearOpMode {
 	ArrayList<String> Order = new ArrayList<>();
-	int Step = 0;
 	boolean ran = false;
 
 	@Override
@@ -35,15 +34,10 @@ public class BlueFrontAuto extends LinearOpMode {
 				robot.driveRobot(1, 0, 0, "BlueAuto");
 				robot.sleep(3000);
 				robot.driveRobot(0,0,0, "BlueAuto");
-				String id = "";
 				int tries = 0;
-				while ((!id.equals("21") || !id.equals("22") || !id.equals("23")) && (tries < 10) && (opModeIsActive())){
-					id = robot.readAprilTag("ID");
-					sleep(10);
-					tries++;
-				}
 				
-				switch (id) {
+				//First Try
+				switch (robot.readAprilTag("ID")) {
 					case "21": 
 						//21 is GPP
 						Collections.addAll(Order, "G", "P", "P");
@@ -58,7 +52,51 @@ public class BlueFrontAuto extends LinearOpMode {
 						break;
 					default:
 						//Just guess
-						Collections.addAll(Order, "F", "A", "I", "L");
+						robot.driveRobot(0,5,0, "BlueAuto");
+						robot.sleep(500);
+						
+						//Second Try
+						switch (robot.readAprilTag("ID")) {
+							case "21": 
+								//21 is GPP
+								Collections.addAll(Order, "G", "P", "P");
+								break;
+							case "22": 
+								//22 is PGP
+								Collections.addAll(Order, "P", "G", "P");
+								break;
+							case "23":
+								//23 is PPG
+								 Collections.addAll(Order, "P", "P", "G");
+								break;
+							default:
+								//Just guess
+								robot.driveRobot(0,5,0, "BlueAuto");
+								robot.sleep(100);
+								
+								//Third Try
+								switch (robot.readAprilTag("ID")) {
+									case "21": 
+										//21 is GPP
+										Collections.addAll(Order, "G", "P", "P");
+										break;
+									case "22": 
+										//22 is PGP
+										Collections.addAll(Order, "P", "G", "P");
+										break;
+									case "23":
+										//23 is PPG
+										 Collections.addAll(Order, "P", "P", "G");
+										break;
+									default:
+										//Just guess
+										robot.driveRobot(0,-5,0, "BlueAuto");
+										robot.sleep(800);
+										Collections.addAll(Order, "F", "A", "I", "L");
+										break;
+								}
+								break;
+						}
 						break;
 				}
 				robot.driveRobot(0,-1,0, "BlueAuto");
@@ -68,11 +106,30 @@ public class BlueFrontAuto extends LinearOpMode {
 				robot.driveRobot(0,1,0, "BlueAuto");
 				robot.sleep(1000);
 				robot.driveRobot(0,0,0, "BlueAuto");
-					
+				
+				if (Order.get(0) == "F")	{
+					break;
+				} else {
+					for (int step = 0; step > 4;){
+						if (robot.readArtifactColor() != Order.get(step)) {
+							robot.chimneyRecycleToggle();
+							robot.Launcher(1);
+							robot.sleep(500);
+							robot.Launcher(0);
+						} else {
+							//launch the correct ball
+							robot.Launcher(1);
+							robot.sleep(500);
+							robot.Launcher(0);
+							step++;
+						}
+					}
+				}
 				ran = true;
 			}
 			robot.telemetryData("BlueFrontAuto"); 
 			telemetry.addLine(Order.toString());
+			telemetry.update();
 		}
 	}
 }
