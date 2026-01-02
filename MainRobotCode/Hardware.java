@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import java.util.Collections;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -146,44 +147,45 @@ public class Hardware {
 
 	// parameters are all doubles
 	// data: from auto/gamepad, to drive motors
-	public void driveRobot(double forward, double rotation, double strafe) {
+	public void driveRobot(double forward, double rotation, double strafe, String opmode) {
 		// Combine drive and turn for blended motion.
-				double leftFrontPower  =   forward - strafe - rotation;
-				double rightFrontPower =   forward + strafe + rotation;
-				double leftBackPower   =  - forward - strafe + rotation;
-				double rightBackPower  =  - forward + strafe - rotation;
-				
-				// Scale the values so neither exceed +/- 1.0		  
-				double max;
-				double min;
-				// Normalize the values so no wheel power exceeds 100%
-				// This ensures that the robot maintains the desired motion.
-				max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
-				max = Math.max(max, Math.abs(leftBackPower));
-				max = Math.max(max, Math.abs(rightBackPower));
-				
-				min = Math.min(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
-				min = Math.min(min, Math.abs(leftBackPower));
-				min = Math.min(min, Math.abs(rightBackPower));
-				
-				if (max > 1.0) {
-					leftFrontPower  /= max;
-					rightFrontPower /= max;
-					leftBackPower   /= max;
-					rightBackPower  /= max;
-				}
-				if (min < -1.0) {
-					leftFrontPower	= -1.0;
-					rightFrontPower   = -1.0;
-					leftBackPower	 = -1.0;
-					rightBackPower	= -1.0;
-				}
-			
-				// Send calculated power to wheels
-				LFDrive.setPower(leftFrontPower);
-				RFDrive.setPower(rightFrontPower);
-				LBDrive.setPower(leftBackPower);
-				RBDrive.setPower(rightBackPower);
+		double leftFrontPower  =   - forward - strafe - rotation;
+		double rightFrontPower =   - forward + strafe + rotation;
+		double leftBackPower   =   - forward + strafe - rotation;
+		double rightBackPower  =   - forward - strafe + rotation;
+		
+		// Scale the values so neither exceed +/- 1.0		  
+		double max;
+		double min;
+		// Normalize the values so no wheel power exceeds 100%
+		// This ensures that the robot maintains the desired motion.
+		max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
+		max = Math.max(max, Math.abs(leftBackPower));
+		max = Math.max(max, Math.abs(rightBackPower));
+		
+		min = Math.min(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
+		min = Math.min(min, Math.abs(leftBackPower));
+		min = Math.min(min, Math.abs(rightBackPower));
+		
+		if (max > 1.0) {
+			leftFrontPower  /= max;
+			rightFrontPower /= max;
+			leftBackPower   /= max;
+			rightBackPower  /= max;
+		}
+		if (min < -1.0) {
+			leftFrontPower	= -1.0;
+			rightFrontPower   = -1.0;
+			leftBackPower	 = -1.0;
+			rightBackPower	= -1.0;
+		}
+	
+		// Send calculated power to wheels
+		LFDrive.setPower(leftFrontPower);
+		RFDrive.setPower(rightFrontPower);
+		LBDrive.setPower(leftBackPower);
+		RBDrive.setPower(rightBackPower);
+		telemetryData(opmode);
 	}
 
 
@@ -246,15 +248,15 @@ public class Hardware {
 			} else {
 				return "Unknown";
 			}
-		}   // end for() loop
+		} 
 
 	return "None";
 	}
 	
 	public void sleep(int millis) {
 		try {
-			Thread.sleep(millis);
-		} catch (InterruptedException e) {
+			sleep(millis);
+		} catch (Exception e) {
 			Thread.currentThread().interrupt();
 		}
 	}
@@ -271,6 +273,8 @@ public class Hardware {
 		launchPrimer.setPosition(LAUNCH_PRIMER_MID);
 		LLauncher.setPower(0);
 	}
+	
+	
 
 	// public void chimneyRecycleToggle() {
 	//	 if (recycling == false) { 
@@ -311,7 +315,6 @@ public class Hardware {
 	}
 
 	
-	
 	// Only parameter is the op mode
 	// All other data is inside, or given to, this file
 	// Run this whenever an update is wanted INSIDE of the op mode
@@ -320,15 +323,17 @@ public class Hardware {
 		myOpMode.telemetry.addLine("OpMode Being Ran: " + currentOpMode);
 		//Says value between -1.0 and 1.0 for each motor
 		myOpMode.telemetry.addData("Drive Powers: ", String.format("LF: %.2f, RF: %.2f, LB: %.2f, RB: %.2f", LFDrive.getPower(), RFDrive.getPower(), LBDrive.getPower(), RBDrive.getPower()));
+		/*
 		myOpMode.telemetry.addData("Left Launcher: " + LLauncher.getPower(), "Right Launcher: " + RLauncher.getPower());
 		myOpMode.telemetry.addData("Chimney Servo Positions: ", String.format("Intake: %.2f, Launch Primer: %.2f, Flipper: %.2f", intake.getPosition(), launchPrimer.getPosition(), flipper.getPosition()));
 		myOpMode.telemetry.addData("Intake CRServo Powers: ", String.format("Left Intake: %.2f, Right Intake: %.2f, ", intake.getPosition(), launchPrimer.getPosition(), flipper.getPosition()));
 		myOpMode.telemetry.addData("Colors: ", "Red: %.2f, Blue: %.2f, Green: %.2f", normRed, normBlue, normGreen);
 		myOpMode.telemetry.addLine("Webcam: " + readAprilTag("Name"));
-		myOpMode.telemetry.addData("Ultrasonic (cm)", "%.1f", ultrasonic0.getDistanceCm());
-		myOpMode.telemetry.addData("Ultrasonic2 (cm)", "%.1f", ultrasonic1.getDistanceCm());
-		myOpMode.telemetry.addData("Ultrasonic3 (cm)", "%.1f", ultrasonic2.getDistanceCm());
-		myOpMode.telemetry.addData("Ultrasonic4 (cm)", "%.1f", ultrasonic3.getDistanceCm());
+		*/
+		// myOpMode.telemetry.addData("Ultrasonic (cm)", "%.1f", ultrasonic0.getDistanceCm());
+		// myOpMode.telemetry.addData("Ultrasonic2 (cm)", "%.1f", ultrasonic1.getDistanceCm());
+		// myOpMode.telemetry.addData("Ultrasonic3 (cm)", "%.1f", ultrasonic2.getDistanceCm());
+		// myOpMode.telemetry.addData("Ultrasonic4 (cm)", "%.1f", ultrasonic3.getDistanceCm());
 
 		myOpMode.telemetry.update();
 	}
