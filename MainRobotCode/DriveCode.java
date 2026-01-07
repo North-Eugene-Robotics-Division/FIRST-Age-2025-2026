@@ -44,7 +44,8 @@ public class DriveCode extends LinearOpMode {
 			if (gamepad2.xWasPressed()) {
 				robot.Intake();
 			}
-			
+
+			// should be gamepad2
 			if (gamepad1.xWasReleased()) {
 				robot.Normalize();
 			}
@@ -52,7 +53,8 @@ public class DriveCode extends LinearOpMode {
 			if (gamepad2.bWasPressed()) {
 				robot.Eject();
 			}
-			
+
+			// should be gamepad2
 			if (gamepad1.bWasReleased()) {
 				robot.Normalize();
 			}
