@@ -29,10 +29,10 @@ public class DriveCode extends LinearOpMode {
 		while (opModeIsActive()) {
 			
 			// POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
-			double Forward  =  gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
+			double Forward  =  -gamepad1.left_stick_y;  
 			double Rotation =  gamepad1.right_stick_x;
 			double Strafe   =  gamepad1.left_stick_x;
-			robot.driveRobot(Forward, Rotation, Strafe);
+			robot.driveRobot(Forward, Rotation, Strafe, "DriveCode");
 			
 			double LaunchPowerPos = gamepad2.right_trigger;
 			double LaunchPowerNeg = -gamepad2.left_trigger;
@@ -41,21 +41,23 @@ public class DriveCode extends LinearOpMode {
 				robot.chimneyLaunch();
 			}
 			
+			if (gamepad2.dpadLeftWasPressed()) {
+				robot.Normalize();
+			}
+			
 			if (gamepad2.xWasPressed()) {
 				robot.Intake();
 			}
-
-			// should be gamepad2
-			if (gamepad1.xWasReleased()) {
+			
+			if (gamepad2.xWasReleased()) {
 				robot.Normalize();
 			}
 			
 			if (gamepad2.bWasPressed()) {
 				robot.Eject();
 			}
-
-			// should be gamepad2
-			if (gamepad1.bWasReleased()) {
+			 
+			if (gamepad2.bWasReleased()) {
 				robot.Normalize();
 			}
 			
@@ -69,10 +71,10 @@ public class DriveCode extends LinearOpMode {
 			}
 			
 			robot.getDetectedColor();
-			robot.ultrasonic0.update();
-			robot.ultrasonic1.update();
-			robot.ultrasonic2.update();
-			robot.ultrasonic3.update();
+			// robot.ultrasonic0.update();
+			// robot.ultrasonic1.update();
+			// robot.ultrasonic2.update();
+			// robot.ultrasonic3.update();
 
 			robot.telemetryData("DriveCode");
 		}
