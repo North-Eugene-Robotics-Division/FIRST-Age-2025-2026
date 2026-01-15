@@ -31,12 +31,13 @@ public class Hardware {
 	public LinearOpMode myOpMode = null;
 	public ElapsedTime runtime = new ElapsedTime();
 	public boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
+	public boolean recycling = false;
 	
-	 //Distance sensor
-	public M5UltrasonicI2C ultrasonic0;
-	public M5UltrasonicI2C ultrasonic1;
-	public M5UltrasonicI2C ultrasonic2;
-	public M5UltrasonicI2C ultrasonic3;
+	//  //Distance sensor
+	// public M5UltrasonicI2C ultrasonic0;
+	// public M5UltrasonicI2C ultrasonic1;
+	// public M5UltrasonicI2C ultrasonic2;
+	// public M5UltrasonicI2C ultrasonic3;
 	
 	//The variable to store our instance of the AprilTag processor.
 	public AprilTagProcessor aprilTag;
@@ -71,13 +72,14 @@ public class Hardware {
 	public CRServo RIntake = null;
 
 	// All servo positions for the chimney 
-	public static final double INTAKE_MIN = .35/5;
+	public static final double INTAKE_MIN = .3/5;
 	public static final double INTAKE_MIL = .66/5;
 	public static final double INTAKE_MID = .55/5;
 	public static final double INTAKE_MAX = .75/5;
-	public static final double LAUNCH_PRIMER_MIN = .25/5;
+	public static final double LAUNCH_PRIMER_MIN = 0/5;
 	public static final double LAUNCH_PRIMER_MID = .5/5;
-	public static final double LAUNCH_PRIMER_MAX = .75/5;
+	public static final double LAUNCH_PRIMER_MAX = 1/5;
+	public static final double LAUNCH_PRIMER_TEST = -2/5;
 	public static final double FLIPPER_MIN = .5/5;
 	public static final double FLIPPER_MAX = 1.0/5;
 
@@ -121,7 +123,7 @@ public class Hardware {
 
 		//Default positions for the chimney servos is straight downwards, excluding the flipper, which has less of a needed starting position
 		intake.setPosition(INTAKE_MID);
-		launchPrimer.setPosition(LAUNCH_PRIMER_MID);
+		launchPrimer.setPosition(LAUNCH_PRIMER_MIN);
 		flipper.setPosition(FLIPPER_MIN);
 
 		// Create initial telemetry
@@ -134,14 +136,14 @@ public class Hardware {
 		myOpMode.telemetry.update();
 
 		initAprilTag();
-		ultrasonic0 = new M5UltrasonicI2C(myOpMode, 0);
-		ultrasonic0.init();
-		ultrasonic1 = new M5UltrasonicI2C(myOpMode, 1);
-		ultrasonic1.init();
-		ultrasonic2 = new M5UltrasonicI2C(myOpMode, 2);
-		ultrasonic2.init();
-		ultrasonic3 = new M5UltrasonicI2C(myOpMode, 3);
-		ultrasonic3.init();
+		// ultrasonic0 = new M5UltrasonicI2C(myOpMode, 0);
+		// ultrasonic0.init();
+		// ultrasonic1 = new M5UltrasonicI2C(myOpMode, 1);
+		// ultrasonic1.init();
+		// ultrasonic2 = new M5UltrasonicI2C(myOpMode, 2);
+		// ultrasonic2.init();
+		// ultrasonic3 = new M5UltrasonicI2C(myOpMode, 3);
+		// ultrasonic3.init();
 	}
 
 
@@ -230,6 +232,16 @@ public class Hardware {
 		normGreen = colorSensor.getNormalizedColors().green / colorSensor.getNormalizedColors().alpha;
 	}
 	
+	public String readArtifactColor() {
+		getDetectedColor();
+		if ((normRed > normGreen) && (normBlue > normGreen)){
+			return "P";
+		}
+		else {
+			return "G";
+		}
+	}
+	
 	public String readAprilTag (String Task) {
 
 		List<AprilTagDetection> currentDetections = aprilTag.getDetections();
@@ -238,7 +250,8 @@ public class Hardware {
 		// Step through the list of detections and display info for each one.
 		for (AprilTagDetection detection : currentDetections) {
 			if (detection.metadata != null) {
-				if (Task == "ID") {
+				// using .equals because thats how you compare strings.
+				if ("ID".equals(Task)) {
 					return String.format(""+detection.id );
 				} else if  (Task == "Name") {
 					return String.format(detection.metadata.name);
@@ -253,38 +266,38 @@ public class Hardware {
 	return "None";
 	}
 	
-	public void sleep(int millis) {
-		try {
-			sleep(millis);
-		} catch (Exception e) {
-			Thread.currentThread().interrupt();
+	public void sleep(double millis) {
+		double timeMark = runtime.milliseconds();
+		
+		while (runtime.milliseconds() >= timeMark + millis) {
+			break;
 		}
+		
 	}
 
 	public void chimneyLaunch() {
-		launchPrimer.setPosition(LAUNCH_PRIMER_MAX);
-		sleep(700);
-		intake.setPosition(INTAKE_MIN);
-		sleep(700);
-		LLauncher.setPower(1);
-		launchPrimer.setPosition(LAUNCH_PRIMER_MIN);
-		sleep(1200);
-		intake.setPosition(INTAKE_MID);
+	/*	intake.setPosition(INTAKE_MIN);
+		sleep(700.0);
 		launchPrimer.setPosition(LAUNCH_PRIMER_MID);
-		LLauncher.setPower(0);
+		sleep(700.0);*/
+		
+		intake.setPosition(INTAKE_MIN);
+		sleep(5000.0);
+		intake.setPosition(INTAKE_MID);
+		
 	}
 	
 	
 
-	// public void chimneyRecycleToggle() {
-	//	 if (recycling == false) { 
-	//		 recycling = true;
-	//		 flipper.setPosition(FLIPPER_MIN);
-	//	 } else if (recycling == true) {
-	//		 recycling = false;
-	//		 flipper.setPosition(FLIPPER_MAX);
-	//	 }
-	// }
+	public void chimneyRecycleToggle() {
+		 if (recycling == false) { 
+			 recycling = true;
+			 flipper.setPosition(FLIPPER_MIN);
+		 } else if (recycling == true) {
+			 recycling = false;
+			 flipper.setPosition(FLIPPER_MAX);
+		 }
+	}
 
 	public void Launcher(double Power) {
 		LLauncher.setPower(Power);
@@ -293,25 +306,24 @@ public class Hardware {
 	
 	public void Intake() {
 		intake.setPosition(INTAKE_MAX);
-		sleep(200);
+		sleep(200.0);
 		LIntake.setPower(-1);
 		RIntake.setPower(1);
 	}
 	
 	public void Normalize() {
-		LIntake.setPower(0);
-		RIntake.setPower(0);
-		sleep(50);
+		LIntake.setPower(-0.01);
+		RIntake.setPower(0.01);
 		intake.setPosition(INTAKE_MID);
-		launchPrimer.setPosition(LAUNCH_PRIMER_MID);
+		launchPrimer.setPosition(LAUNCH_PRIMER_MIN);
 	}
 	
 	public void Eject() {
 		LIntake.setPower(1);
 		RIntake.setPower(-1);
 		intake.setPosition(INTAKE_MAX);
-		sleep(100);
-		launchPrimer.setPosition(LAUNCH_PRIMER_MAX);
+		sleep(100.0);
+		launchPrimer.setPosition(LAUNCH_PRIMER_MID);
 	}
 
 	
@@ -323,13 +335,13 @@ public class Hardware {
 		myOpMode.telemetry.addLine("OpMode Being Ran: " + currentOpMode);
 		//Says value between -1.0 and 1.0 for each motor
 		myOpMode.telemetry.addData("Drive Powers: ", String.format("LF: %.2f, RF: %.2f, LB: %.2f, RB: %.2f", LFDrive.getPower(), RFDrive.getPower(), LBDrive.getPower(), RBDrive.getPower()));
-		/*
+		
 		myOpMode.telemetry.addData("Left Launcher: " + LLauncher.getPower(), "Right Launcher: " + RLauncher.getPower());
 		myOpMode.telemetry.addData("Chimney Servo Positions: ", String.format("Intake: %.2f, Launch Primer: %.2f, Flipper: %.2f", intake.getPosition(), launchPrimer.getPosition(), flipper.getPosition()));
-		myOpMode.telemetry.addData("Intake CRServo Powers: ", String.format("Left Intake: %.2f, Right Intake: %.2f, ", intake.getPosition(), launchPrimer.getPosition(), flipper.getPosition()));
+		myOpMode.telemetry.addData("Intake CRServo Powers: ", String.format("Left Intake: %.2f, Right Intake: %.2f, ", LIntake.getPower(), RIntake.getPower()));
 		myOpMode.telemetry.addData("Colors: ", "Red: %.2f, Blue: %.2f, Green: %.2f", normRed, normBlue, normGreen);
-		myOpMode.telemetry.addLine("Webcam: " + readAprilTag("Name"));
-		*/
+		myOpMode.telemetry.addLine("Webcam: " + readAprilTag("ID"));
+		
 		// myOpMode.telemetry.addData("Ultrasonic (cm)", "%.1f", ultrasonic0.getDistanceCm());
 		// myOpMode.telemetry.addData("Ultrasonic2 (cm)", "%.1f", ultrasonic1.getDistanceCm());
 		// myOpMode.telemetry.addData("Ultrasonic3 (cm)", "%.1f", ultrasonic2.getDistanceCm());
