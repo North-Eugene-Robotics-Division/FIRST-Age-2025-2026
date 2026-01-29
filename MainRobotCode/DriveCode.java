@@ -11,6 +11,8 @@ import org.firstinspires.ftc.teamcode.Hardware;
 @TeleOp(name="Drive_Code", group="Linear OpMode")
 public class DriveCode extends LinearOpMode {
 	private ElapsedTime runtime = new ElapsedTime();
+	
+	private double SpeedModifier = 1;
 
 	@Override
 	public void runOpMode() {
@@ -29,14 +31,50 @@ public class DriveCode extends LinearOpMode {
 		while (opModeIsActive()) {
 			
 			// POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
-			double Forward  =  -gamepad1.left_stick_y;  
-			double Rotation =  gamepad1.right_stick_x;
-			double Strafe   =  gamepad1.left_stick_x;
+			double Forward  =  -gamepad1.left_stick_y * SpeedModifier;  
+			double Rotation =  gamepad1.right_stick_x * SpeedModifier;
+			double Strafe   =  gamepad1.left_stick_x * SpeedModifier;
 			robot.driveRobot(Forward, Rotation, Strafe, "DriveCode");
 			
+			// Triggers used to launch the artifact
 			double LaunchPowerPos = gamepad2.right_trigger;
 			double LaunchPowerNeg = -gamepad2.left_trigger;
+			
+			// Buttons which change the robot speed
+			
+			// X on Driving Gamepad inverts the controls
+			if (gamepad1.xWasReleased()) {
+				SpeedModifier *= -1;
+			}
+			
+			//dpad up and down increase or decrease the robot speed
+			if (gamepad1.dpadUpWasReleased()) {
+				if (SpeedModifier > 0) {
+					SpeedModifier += .1;
+				} else {
+					SpeedModifier += -.1;
+				}
+			}
+			
+			if (gamepad1.dpadDownWasReleased()) {
+				if (SpeedModifier > 0) {
+					SpeedModifier += -.1;
+				} else {
+					SpeedModifier += .1;
+				}
+			}
+			
+			//Speed Modifier Regulation
+			if (SpeedModifier < -1) {
+				SpeedModifier = -1;
+			}
+			
+			if (SpeedModifier > 1) {
+				SpeedModifier = 1;
+			}
+			
 		
+			// Button Functions
 			if (gamepad2.aWasReleased()) {
 				robot.chimneyLaunch();
 			}
