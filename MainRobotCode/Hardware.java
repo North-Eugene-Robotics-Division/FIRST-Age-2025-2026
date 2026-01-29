@@ -313,9 +313,13 @@ public class Hardware {
 
 	public void chimneyRecycleToggle() {
 		 if (recycling == false) { 
-			 recycling = true;
+			recycling = true;
+			LKnuckle.setPosition(LKNUCKLE_MAX);
+			RKnuckle.setPosition(RKNUCKLE_MAX);
 		 } else if (recycling == true) {
-			 recycling = false;
+			recycling = false;
+			LKnuckle.setPosition(LKNUCKLE_MIN);
+			RKnuckle.setPosition(RKNUCKLE_MIN);
 		 }
 	}
 
