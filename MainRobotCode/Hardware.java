@@ -50,6 +50,7 @@ public class Hardware {
 
 	public NormalizedColorSensor colorSensor;
 
+	public double SpeedModifier = 1;
 	//Motors to control all wheels
 	
 	//Motors for Driving
@@ -76,16 +77,16 @@ public class Hardware {
 	public CRServo RIntake = null;
 
 	// All servo positions for the chimney 
-	public static final double INTAKE_MIN = .15/5;
-	public static final double INTAKE_MIL = .33/5;
-	public static final double INTAKE_MID = .55/5;
-	public static final double INTAKE_MAX = .75/5;
+	public static final double INTAKE_MIN = 0.15/5;
+	public static final double INTAKE_MIL = 0.48/5;
+	public static final double INTAKE_MID = 0.55/5;
+	public static final double INTAKE_MAX = 0.75/5;
 	public static final double LAUNCH_PRIMER_MIN = 0/5;
-	public static final double LAUNCH_PRIMER_MID = .25/5;
-	public static final double LAUNCH_PRIMER_MAX = .5/5;
+	public static final double LAUNCH_PRIMER_MID = 0.25/5;
+	public static final double LAUNCH_PRIMER_MAX = 0.4/5;
 	public static final double FLIPPER_MIN = 0/5;
-	public static final double FLIPPER_MID = .5/5;
-	public static final double FLIPPER_MAX = .1/5;
+	public static final double FLIPPER_MID = 0.5/5;
+	public static final double FLIPPER_MAX = 0.1/5;
 	
 	//Knuckle Positions
 	public static final double LKNUCKLE_MIN = 0/5;
@@ -169,7 +170,7 @@ public class Hardware {
 	public void driveRobot(double forward, double rotation, double strafe, String opmode) {
 		// Combine drive and turn for blended motion.
 		double leftFrontPower  =   - forward - strafe - rotation;
-		double rightFrontPower =   - forward + strafe + rotation;
+		double rightFrontPower =   - forward - strafe + rotation;
 		double leftBackPower   =   - forward + strafe - rotation;
 		double rightBackPower  =   - forward - strafe + rotation;
 		
@@ -325,7 +326,12 @@ public class Hardware {
 
 	public void Launcher(double Power) {
 		LLauncher.setPower(Power);
-		RLauncher.setPower(Power);
+		RLauncher.setPower(-Power);
+	}
+	
+	public void StopLauncher() {
+		LLauncher.setPower(0.0f);
+		RLauncher.setPower(0.0f);
 	}
 	
 	public void Intake() {
@@ -364,7 +370,9 @@ public class Hardware {
 		myOpMode.telemetry.addData("Chimney Servo Positions: ", String.format("Intake: %.2f, Launch Primer: %.2f, Flipper: %.2f", intake.getPosition(), launchPrimer.getPosition(), flipper.getPosition()));
 		myOpMode.telemetry.addData("Intake CRServo Powers: ", String.format("Left Intake: %.2f, Right Intake: %.2f, ", LIntake.getPower(), RIntake.getPower()));
 		myOpMode.telemetry.addData("Colors: ", "Red: %.2f, Blue: %.2f, Green: %.2f", normRed, normBlue, normGreen);
+		myOpMode.telemetry.addData("Artifact Color: ", readArtifactColor());
 		myOpMode.telemetry.addLine("Webcam: " + readAprilTag("ID"));
+		myOpMode.telemetry.addData("Speed Modifier", SpeedModifier);
 		
 		// myOpMode.telemetry.addData("Ultrasonic (cm)", "%.1f", ultrasonic0.getDistanceCm());
 		// myOpMode.telemetry.addData("Ultrasonic2 (cm)", "%.1f", ultrasonic1.getDistanceCm());
