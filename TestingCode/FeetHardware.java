@@ -22,7 +22,15 @@ public class FeetHardware {
         motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODERS);
     }
     
+    int FeetPosition = 3000;
+    
     public void moveFeet(){
-        motor.setPower(1.0f); // Set power to 1.0 and convert to float
+        if (motor.getCurrentPosition() < FeetPosition) {
+            motor.setPower(1);
+        }
+        
+        if (motor.getCurrentPosition() > FeetPosition) {
+            motor.setPower(-1);
+        }
     }
 }
