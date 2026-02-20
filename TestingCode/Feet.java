@@ -57,9 +57,11 @@ public class Feet extends LinearOpMode {
                 robot.moveFeet();
             }
         
-        // Run telemetry while opmode is active
-        telemetry.addData("pos", robot.motor.getCurrentPosition());
-        telemetry.update();
+            // Run telemetry while opmode is active
+            // if (robot.ge)
+            
+            telemetry.addData("pos", robot.motor.getCurrentPosition());
+            telemetry.update();
         }
     }
 }
