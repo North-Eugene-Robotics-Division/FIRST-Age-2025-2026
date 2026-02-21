@@ -23,14 +23,17 @@ public class FeetHardware {
     }
     
     int FeetPosition = 3000;
+    boolean isMotorBusy = false;
     
     public void moveFeet(){
-        if (motor.getCurrentPosition() < FeetPosition) {
+        if (motor.getCurrentPosition() <= FeetPosition) {
             motor.setPower(1);
+            isMotorBusy = true;
         }
         
         if (motor.getCurrentPosition() > FeetPosition) {
             motor.setPower(-1);
+            isMotorBusy = true;
         }
     }
 }
