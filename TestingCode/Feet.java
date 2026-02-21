@@ -53,15 +53,24 @@ public class Feet extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            if (gamepad1.xWasPressed()) {
+            if (gamepad1.xWasPressed() && robot.isMotorBusy == false) {
                 robot.moveFeet();
             }
-        
-            // Run telemetry while opmode is active
-            // if (robot.ge)
             
             telemetry.addData("pos", robot.motor.getCurrentPosition());
             telemetry.update();
+            
+            // Stop turning if past max motor pos or if motor is stopped
+            if (robot.motor.getCurrentPosition() >= robot.FeetPosition && robot.motor.getPower() > 0) {
+                robot.motor.setPower(0);
+                robot.isMotorBusy = false;
+            }
+            
+            // Stop turning if below min motor pos or if motor is stopped
+            if (robot.motor.getCurrentPosition() <= -robot.FeetPosition && robot.motor.getPower() < 0) {
+                robot.motor.setPower(0);
+                robot.isMotorBusy = false;
+            }
         }
     }
 }
