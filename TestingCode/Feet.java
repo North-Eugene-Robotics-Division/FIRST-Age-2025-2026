@@ -38,8 +38,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 @TeleOp
 
 public class Feet extends LinearOpMode {
-
-
+    
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
@@ -53,23 +52,23 @@ public class Feet extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            if (gamepad1.xWasPressed() && robot.isMotorBusy == false) {
+            if (gamepad1.xWasPressed() && robot.isFootBusy == false) {
                 robot.moveFeet();
             }
             
-            telemetry.addData("pos", robot.motor.getCurrentPosition());
+            telemetry.addData("pos", robot.Foot.getCurrentPosition());
             telemetry.update();
             
             // Stop turning if past max motor pos or if motor is stopped
-            if (robot.motor.getCurrentPosition() >= robot.FeetPosition && robot.motor.getPower() > 0) {
-                robot.motor.setPower(0);
-                robot.isMotorBusy = false;
+            if (robot.Foot.getCurrentPosition() >= robot.FeetPosition && robot.Foot.getPower() > 0) {
+                robot.Foot.setPower(0);
+                robot.isFootBusy = false;
             }
             
             // Stop turning if below min motor pos or if motor is stopped
-            if (robot.motor.getCurrentPosition() <= -robot.FeetPosition && robot.motor.getPower() < 0) {
-                robot.motor.setPower(0);
-                robot.isMotorBusy = false;
+            if (robot.Foot.getCurrentPosition() <= 0 && robot.Foot.getPower() < 0) {
+                robot.Foot.setPower(0);
+                robot.isFootBusy = false;
             }
         }
     }
