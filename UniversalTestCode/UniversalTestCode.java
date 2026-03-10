@@ -74,15 +74,14 @@ public class UniversalTestCode extends LinearOpMode {
                 }
             }
 
-            if (gamepad1.y) {
+            if (gamepad1.yWasReleased()) {
                 //should toggle, but maybe not.
                 servoMode = !servoMode;
-                robot.sleep(250);
             }
             //telemetry.addLine(String.valueOf(servoMode));
 
             //stop
-            if (gamepad1.x) {
+            if (gamepad1.xWasReleased()) {
                 if (servoMode) {
                     //servo code here
                     robot.servoStop();
@@ -94,14 +93,12 @@ public class UniversalTestCode extends LinearOpMode {
                 }
             }
             
-            if (gamepad1.dpad_down) {
+            if (gamepad1.dpadDownWasReleased()) {
                 robot.motorPowerDown();
-                robot.sleep(250);
             }
             
-            if (gamepad1.dpad_up) {
+            if (gamepad1.dpadUpWasReleased()) {
                 robot.motorPowerUp();
-                robot.sleep(250);
             }
         }
     }
