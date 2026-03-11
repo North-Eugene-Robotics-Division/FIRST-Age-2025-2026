@@ -51,7 +51,7 @@ public class UniversalTestCode extends LinearOpMode {
             
 
             // read buttons
-            if (gamepad1.a) {
+            if (gamepad1.aWasPressed()) {
                 if (servoMode) {
                     //servo code here
                     robot.setServoMax();
@@ -62,7 +62,7 @@ public class UniversalTestCode extends LinearOpMode {
                     //telemetry.addLine("Set" + robot.motorsNamesList[robot.motorNumber] + " to 1");
                 }
             }
-            if (gamepad1.b) {
+            if (gamepad1.bWasPressed()) {
                 if (servoMode) {
                     //servo code here
                     robot.setServoMin();
@@ -74,14 +74,14 @@ public class UniversalTestCode extends LinearOpMode {
                 }
             }
 
-            if (gamepad1.yWasReleased()) {
+            if (gamepad1.yWasPressed()) {
                 //should toggle, but maybe not.
                 servoMode = !servoMode;
             }
             //telemetry.addLine(String.valueOf(servoMode));
 
             //stop
-            if (gamepad1.xWasReleased()) {
+            if (gamepad1.xWasPressed()) {
                 if (servoMode) {
                     //servo code here
                     robot.servoStop();
@@ -93,11 +93,11 @@ public class UniversalTestCode extends LinearOpMode {
                 }
             }
             
-            if (gamepad1.dpadDownWasReleased()) {
+            if (gamepad1.dpadDownWasPressed()) {
                 robot.motorPowerDown();
             }
             
-            if (gamepad1.dpadUpWasReleased()) {
+            if (gamepad1.dpadUpWasPressed()) {
                 robot.motorPowerUp();
             }
         }
