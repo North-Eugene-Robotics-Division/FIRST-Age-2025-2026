@@ -50,6 +50,7 @@ public class BugBotDrive extends LinearOpMode {
             // Setup a variable for each drive wheel to save power level for telemetry
             double leftPower;
             double rightPower;
+            double dropMultiplier = 1.0;
 
             double drive = gamepad1.left_stick_y;
             double turn  = -gamepad1.right_stick_x;
@@ -60,14 +61,23 @@ public class BugBotDrive extends LinearOpMode {
             leftDrive.setPower(leftPower);
             rightDrive.setPower(rightPower);
             
+            if (arm.getCurrentPosition() >= -250) {
+                dropMultiplier = 0.2;
+            } else if (arm.getCurrentPosition() >= -150) {
+                dropMultiplier = 0.1;
+            } else {
+                dropMultiplier = 1.0;
+            }
+            
             double TRIGGER_TOLERANCE = 0.2d;
             if (gamepad1.right_trigger > TRIGGER_TOLERANCE) {
-                arm.setPower(gamepad1.right_trigger);
-            } else if (gamepad1.left_trigger > TRIGGER_TOLERANCE && (arm.getCurrentPosition() > -360)) {
+                arm.setPower(gamepad1.right_trigger * dropMultiplier);
+            } else if (gamepad1.left_trigger > TRIGGER_TOLERANCE && (arm.getCurrentPosition() > -670)) {
                 arm.setPower(-gamepad1.left_trigger);
             } else {
                 arm.setPower(0.0f);
             }
+            
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
@@ -76,12 +86,16 @@ public class BugBotDrive extends LinearOpMode {
             
             if (limitButton.isPressed() && !isArmDown) {
                 telemetry.addData("Button Status", "Pressed");
+                arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 isArmDown = true;
             } else if (!limitButton.isPressed()) {
                 telemetry.addData("Button Status", "Not Pressed");
                 isArmDown = false;
             } else {
                 telemetry.addData("Button Status", "Pressed");
+                arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             }
             telemetry.update();
         }
