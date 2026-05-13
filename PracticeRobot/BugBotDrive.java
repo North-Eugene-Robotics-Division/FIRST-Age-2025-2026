@@ -20,7 +20,7 @@ public class BugBotDrive extends LinearOpMode {
     private DcMotor arm = null;
     private TouchSensor limitButton = null;
     private boolean isArmDown = false;
-
+    
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
@@ -61,19 +61,19 @@ public class BugBotDrive extends LinearOpMode {
             leftDrive.setPower(leftPower);
             rightDrive.setPower(rightPower);
             
-            if (arm.getCurrentPosition() >= -250) {
-                dropMultiplier = 0.2;
-            } else if (arm.getCurrentPosition() >= -150) {
-                dropMultiplier = 0.1;
+            if (arm.getCurrentPosition() >= -150) {
+                dropMultiplier = 0.25;
             } else {
                 dropMultiplier = 1.0;
             }
             
             double TRIGGER_TOLERANCE = 0.2d;
-            if (gamepad1.right_trigger > TRIGGER_TOLERANCE) {
-                arm.setPower(gamepad1.right_trigger * dropMultiplier);
-            } else if (gamepad1.left_trigger > TRIGGER_TOLERANCE && (arm.getCurrentPosition() > -670)) {
-                arm.setPower(-gamepad1.left_trigger);
+            if (gamepad1.right_trigger > TRIGGER_TOLERANCE && (arm.getCurrentPosition() > -470)) {
+                arm.setPower(-gamepad1.right_trigger);
+            } else if (gamepad1.left_trigger > TRIGGER_TOLERANCE) {
+                arm.setPower(gamepad1.left_trigger * dropMultiplier);
+            } else if (arm.getCurrentPosition() < -500) {
+                arm.setPower(0.001);
             } else {
                 arm.setPower(0.0f);
             }
