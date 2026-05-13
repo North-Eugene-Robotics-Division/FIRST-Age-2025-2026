@@ -61,18 +61,18 @@ public class BugBotDrive extends LinearOpMode {
             leftDrive.setPower(leftPower);
             rightDrive.setPower(rightPower);
             
-            if (arm.getCurrentPosition() >= -150) {
+            if (arm.getCurrentPosition() >= -150) { // -350 on 2nd bug bot
                 dropMultiplier = 0.25;
             } else {
                 dropMultiplier = 1.0;
             }
             
             double TRIGGER_TOLERANCE = 0.2d;
-            if (gamepad1.right_trigger > TRIGGER_TOLERANCE && (arm.getCurrentPosition() > -470)) {
+            if (gamepad1.right_trigger > TRIGGER_TOLERANCE && (arm.getCurrentPosition() > -470)) { // -970 on 2nd bug bot
                 arm.setPower(-gamepad1.right_trigger);
             } else if (gamepad1.left_trigger > TRIGGER_TOLERANCE) {
                 arm.setPower(gamepad1.left_trigger * dropMultiplier);
-            } else if (arm.getCurrentPosition() < -500) {
+            } else if (arm.getCurrentPosition() < -500) { // -1000 on 2nd bug bot
                 arm.setPower(0.001);
             } else {
                 arm.setPower(0.0f);
