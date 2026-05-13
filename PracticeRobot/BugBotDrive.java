@@ -21,6 +21,11 @@ public class BugBotDrive extends LinearOpMode {
     private TouchSensor limitButton = null;
     private boolean isArmDown = false;
     
+    private void resetArm() {
+        arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); // Reset the motor encoder
+        arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); // Turn the motor back on when we are done
+    }
+        
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
@@ -34,9 +39,7 @@ public class BugBotDrive extends LinearOpMode {
         leftDrive.setDirection(DcMotor.Direction.REVERSE);
         rightDrive.setDirection(DcMotor.Direction.FORWARD);
         
-        arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); // Reset the motor encoder
-        arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); // Turn the motor back on when we are done
-        
+        resetArm();
         
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -61,23 +64,22 @@ public class BugBotDrive extends LinearOpMode {
             leftDrive.setPower(leftPower);
             rightDrive.setPower(rightPower);
             
-            if (arm.getCurrentPosition() >= -150) { // -350 on 2nd bug bot
+            if (arm.getCurrentPosition() >= -150) {
                 dropMultiplier = 0.25;
             } else {
                 dropMultiplier = 1.0;
             }
             
             double TRIGGER_TOLERANCE = 0.2d;
-            if (gamepad1.right_trigger > TRIGGER_TOLERANCE && (arm.getCurrentPosition() > -470)) { // -970 on 2nd bug bot
+            if (gamepad1.right_trigger > TRIGGER_TOLERANCE && (arm.getCurrentPosition() > -470)) {
                 arm.setPower(-gamepad1.right_trigger);
             } else if (gamepad1.left_trigger > TRIGGER_TOLERANCE) {
                 arm.setPower(gamepad1.left_trigger * dropMultiplier);
-            } else if (arm.getCurrentPosition() < -500) { // -1000 on 2nd bug bot
+            } else if (arm.getCurrentPosition() < -500) {
                 arm.setPower(0.001);
             } else {
                 arm.setPower(0.0f);
             }
-            
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
@@ -86,16 +88,14 @@ public class BugBotDrive extends LinearOpMode {
             
             if (limitButton.isPressed() && !isArmDown) {
                 telemetry.addData("Button Status", "Pressed");
-                arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                resetArm();
                 isArmDown = true;
             } else if (!limitButton.isPressed()) {
                 telemetry.addData("Button Status", "Not Pressed");
                 isArmDown = false;
             } else {
                 telemetry.addData("Button Status", "Pressed");
-                arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                resetArm();
             }
             telemetry.update();
         }
