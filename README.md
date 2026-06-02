@@ -1,4 +1,4 @@
 # FIRST-Age-2025-2026
 Hello! Welcome from the NERD robotics team!
 
-This is the code that we are working on during the 2025-2026 season of FTC. The main branch here contains the code used by our actual competition robot. Alternatively, there is a branch containing the code used by our "Practice robot", which was a basic robot we made with the new members, to show them the ropes of robotics.
+This is the repository for all the code the NERD team programmed during the 2025/2026 Season. During this season, we made a main robot folder, which was our season robot, a practice robot folder, which was for our presentation robot, a testing code folder, which was for the Universal test code, a new program this year developed to test any individual motor or servo, and lastly a testing code folder, which was for temporary testing files we worked with.
