@@ -75,6 +75,7 @@ public class DriveCode extends LinearOpMode {
 			
 		
 			// Button Functions
+			
 			if (gamepad2.yWasReleased()) {
 				robot.chimneyRecycleToggle();
 			}
