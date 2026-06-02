@@ -89,10 +89,10 @@ public class Hardware {
 	public static final double FLIPPER_MAX = 0.1/5;
 	
 	//Knuckle Positions
-	public static final double LKNUCKLE_MIN = 0/5;
-	public static final double LKNUCKLE_MAX = 1/5;
-	public static final double RKNUCKLE_MIN = 0/5;
-	public static final double RKNUCKLE_MAX = 1/5;
+	public static final double LKNUCKLE_MIN = 0;
+	public static final double LKNUCKLE_MAX = 0.75;
+	public static final double RKNUCKLE_MIN = 0;
+	public static final double RKNUCKLE_MAX = 0.75;
 
 
 	public float red, blue, green;
@@ -170,9 +170,9 @@ public class Hardware {
 	public void driveRobot(double forward, double rotation, double strafe, String opmode) {
 		// Combine drive and turn for blended motion.
 		double leftFrontPower  =   - forward - strafe - rotation;
-		double rightFrontPower =   - forward - strafe + rotation;
+		double rightFrontPower =   - forward + strafe + rotation;
 		double leftBackPower   =   - forward + strafe - rotation;
-		double rightBackPower  =   - forward - strafe + rotation;
+		double rightBackPower  =	 forward + strafe - rotation;
 		
 		// Scale the values so neither exceed +/- 1.0		  
 		double max;
@@ -322,6 +322,9 @@ public class Hardware {
 			LKnuckle.setPosition(LKNUCKLE_MIN);
 			RKnuckle.setPosition(RKNUCKLE_MIN);
 		 }
+		 //LKnuckle.setPower(0.2);
+		 //sleep(200);
+		 //LKnuckle.setPower(0.0);
 	}
 
 	public void Launcher(double Power) {
@@ -342,6 +345,7 @@ public class Hardware {
 	}
 	
 	public void Normalize() {
+		StopLauncher();
 		LIntake.setPower(-0.01);
 		RIntake.setPower(0.01);
 		intake.setPosition(INTAKE_MID);
